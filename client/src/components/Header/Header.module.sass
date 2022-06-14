@@ -1,0 +1,88 @@
+@import "../../styles/_vars"
+
+.header
+    display: grid
+    grid-template-columns: 1fr auto
+    align-items: flex-start
+    padding: 20px 30px 0 30px
+    border-bottom: 1px solid $gray
+    height: 70px
+
+.left
+    display: grid
+    grid-template-columns: auto 1fr
+    gap: 40px
+    alick-align: center
+    &Actions
+        display: flex
+        align-items: flex-start
+        gap: 40px
+
+.logo
+    font-size: 25px
+    font-weight: bold
+    letter-spacing: -1px
+
+.nav
+    &List
+        display: grid
+        grid-template-columns: repeat(4, auto)
+        gap: 40px
+        align-items: center
+    &Item
+        border-bottom: 3px solid transparent
+        & a
+            display: block
+            padding-top: 6px
+            padding-bottom: 23px
+            color: grey
+            font-size: 15px
+            &:hover
+                color: $red
+        &Active
+            border-color: $red
+            & a
+                color: $black
+
+.search
+    max-width: 360px
+    position: relative
+    &Button
+        position: absolute
+        top: 0
+        left: 0
+        width: 35px
+        height: 35px
+        background-color: transparent
+        border: none
+        cursor: pointer
+        & svg
+            fill: $grayDark
+            width: 18px !important
+            height: 18px !important
+            &:hover
+                fill: $black
+    &Input
+        padding: 6px 7px 6px 38px
+        box-shadow: $shadowBold
+        border: 1px solid $gray
+        font-size: 14px
+        width: 360px
+        border-radius: 5px
+        align-items: center
+        &::placeholder
+            font-family: $fontYandex
+            font-weight: 500
+        &Hide
+            display: none
+
+.right
+    margin-left: auto
+    position: relative
+
+.user
+    cursor: pointer
+    &Avatar
+        height: 40px
+        width: 40px
+        border-radius: 50%

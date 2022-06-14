@@ -1,0 +1,29 @@
+@import "../../styles/_vars"
+
+.footer
+    display: grid
+    grid-template-rows: repeat(2, 1fr)
+    padding: 20px 30px
+    border-top: 1px solid $gray
+
+.top
+    display: grid
+    grid-template-columns: 1fr auto
+    gap: 20px
+    &Menu
+        max-width: 450px
+        &List
+            display: grid
+            grid-template-columns: repeat(3, auto)
+        &Item a
+            color: $black
+            font-size: 13px
+            &:hover
+                color: $red
+
+.text
+    max-width: 515px
+    color: #777
+    font-size: 13px
+    font-weight: 400
+    line-height: 20px
