@@ -31,7 +31,7 @@ const PlaylistComponent = ({ id, title, cover, owners, name }: IPlayListProps): 
     const [hover, setHover] = React.useState<boolean>(false);
     const [activePlaylist, setActivePlaylist] = React.useState<boolean>(currentPlaylist.id === id);
     const [tracks, setTracks] = React.useState<Array<ITrack>>([{
-        time: "00:00",
+        duration: "00:00",
         filt: "",
         title: "",
         id: -1,

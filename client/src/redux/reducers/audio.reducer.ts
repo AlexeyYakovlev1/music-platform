@@ -11,7 +11,7 @@ interface IInitialState {
 
 const initialState: IInitialState = {
     currentTrack: {
-        time: "00:00",
+        duration: "00:00",
         filt: "",
         title: "",
         id: -1,
@@ -42,7 +42,7 @@ const initialState: IInitialState = {
         ],
         audios: [
             {
-                time: "00:00",
+                duration: "00:00",
                 filt: "",
                 title: "",
                 id: -1,
@@ -77,7 +77,7 @@ const initialState: IInitialState = {
         ],
         audios: [
             {
-                time: "00:00",
+                duration: "00:00",
                 filt: "",
                 title: "",
                 id: -1,

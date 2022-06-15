@@ -1,10 +1,10 @@
 const path = require("path");
 const fs = require("fs");
 const uuid = require("uuid");
+const { getAudioDurationInSeconds } = require('get-audio-duration');
 
 const db = require("../db");
 const Message = require("../services/message.service");
-
 const rmHh = require("../helpers/removeHash.helper");
 
 const { PROJECT_ROOT } = process.env;
@@ -38,7 +38,7 @@ class AudioController {
 			}
 
 			const fileName = `${musicName.replace(musicExtname, "")}_${uuid.v4()}${musicExtname}`;
-			const queryForAdd = `INSERT INTO track(filt,owners,cover,title,audio) VALUES($1,$2,$3,$4,$5) RETURNING *`;
+			const queryForAdd = `INSERT INTO track(duration,filt,owners,cover,title,audio) VALUES($1,$2,$3,$4,$5,$6) RETURNING *`;
 
 			let ows = owners;
 
@@ -47,7 +47,27 @@ class AudioController {
 				ows = JSON.parse(owners);
 			}
 
-			const newTrack = await db.query(queryForAdd, [filt, ows, cover, title, fileName]);
+			// insert file in folder
+			fs.appendFile(path.join(musicDir, fileName), file.data, (err) => {
+				if (err) {
+					return new Message(400, { success: false }).log(res, `Ошибка при добавлении файла в папку: ${err.message}`);
+				}
+			});
+
+            function getTime(time) {
+                let res = "0:00";
+                let minutes, seconds = 0;
+
+                seconds = Math.floor(time % 60);
+                minutes = Math.floor((time / 60) % 60);
+
+                res = `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
+
+                return res;
+            };
+
+            const duration = await getAudioDurationInSeconds(path.join(musicDir, fileName)).then(data => getTime(data));
+			const newTrack = await db.query(queryForAdd, [duration, filt, ows, cover, title, fileName]);
 
 			// update or no owner audios
 			for (let i = 0; i < ows.length; i++) {
@@ -73,28 +93,6 @@ class AudioController {
 					
 				await db.query(queryForUpdateOwner, [audios, ows[i]]);
 			}
-
-			// check music file name
-			fs.promises.readdir(musicDir, (err, files) => {
-				if (err) {
-					return new Message(400, { success: false }).log(res, `Ошибка при чтении директории музыки: ${err.message}`);
-				}
-
-				files.forEach(fileName => {
-					const changeFileName = rmHh(fileName, musicExtname);
-
-					if (musicName === changeFileName) {
-						return new Message(400, { success: false }).log(res, "Музыка с таким именем уже существует в папке");
-					};
-				});
-			});
-
-			// insert file in folder
-			fs.appendFile(path.join(musicDir, fileName), file.data, (err) => {
-				if (err) {
-					return new Message(400, { success: false }).log(res, `Ошибка при добавлении файла в папку: ${err.message}`);
-				}
-			});
 
 			return new Message(200, { success: true, findTrack: newTrack.rows[0] }).log(res, `Музыка добавлена`);
 		} catch(e) {

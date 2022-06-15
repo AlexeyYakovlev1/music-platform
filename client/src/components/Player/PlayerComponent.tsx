@@ -63,14 +63,18 @@ const PlayerComponent = (): JSX.Element => {
     }, [isMounted, muted]);
 
     React.useEffect(() => {
-        isMounted && player.play(audioPlay, currentTrack.audio);
+        if (isMounted) {
+            player.play(audioPlay, currentTrack.audio);
+        }
+        
         // eslint-disable-next-line
-    }, [isMounted, audioPlay, currentTrack.audio, idxTrack]);
+    }, [isMounted, audioPlay, currentTrack.audio, idxTrack, currentPlaylist]);
 
     React.useEffect(() => {
-        isMounted && player.init(currentTrack.audio, audioPlay);
+        isMounted && player.init(currentTrack.audio);
+        
         // eslint-disable-next-line
-    }, [isMounted, idxTrack, currentTrack.audio]);
+    }, [isMounted, currentTrack.audio, currentPlaylist]);
 
     const volumeRangeHandler = (event: React.FormEvent<HTMLInputElement>) => {
         if (!volumeRef.current) return;

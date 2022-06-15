@@ -7,7 +7,7 @@ export interface ITrack {
     audio: string;
     cover: string;
     title: string;
-    time: string;
+    duration: string;
 }
 
 export interface IPlaylist {

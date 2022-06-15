@@ -35,7 +35,7 @@ const Playlist = (): JSX.Element => {
         ],
         audios: [
             {
-                time: "00:00",
+                duration: "00:00",
                 filt: "",
                 title: "",
                 id: -1,
@@ -54,7 +54,7 @@ const Playlist = (): JSX.Element => {
         ],
         cover: ""
     });
-    const [playShow, setPlayShow] = React.useState(playlist.audios.some((audio: any) => audio.id === +currentTrack.id));
+    const [playShow, setPlayShow] = React.useState<boolean>(true);
     const isMounted = useMounted();
 
     React.useEffect(() => {
@@ -73,19 +73,28 @@ const Playlist = (): JSX.Element => {
     }, [isMounted, currentPlaylist, id, audioPlay, currentTrack]);
 
     React.useEffect(() => {
-        if (isMounted) {
-            setPlayShow(playlist.audios.some((audio: any) => +audio.id === +currentTrack.id));
+        if (id && isMounted) {
+            if (playlist.audios.some((audio: any) => +audio.id === +currentTrack.id)) {
+                setPlayShow(false);
+
+                if (!audioPlay) {
+                    setPlayShow(true);
+                } else {
+                    setPlayShow(false);
+                }
+            }
         }
 
         // eslint-disable-next-line
-    }, [isMounted, currentPlaylist, currentTrack]);
+    }, [isMounted, id, audioPlay, currentPlaylist, currentTrack]);
 
     const playHandler = () => {
         if (!activePlaylist) {
             dispatch(setCurrentPlaylist(playlist));
+            dispatch(setAudioPlay(true));
+        } else {
+            dispatch(setAudioPlay(!audioPlay));
         }
-
-        dispatch(setAudioPlay(!audioPlay));
     }
 
     return (
@@ -114,7 +123,7 @@ const Playlist = (): JSX.Element => {
                                 onClick={playHandler}
                                 className={cn(classes.playlistPlay, classes.playlistActionsButton)}
                             >
-                                {(!activePlaylist || (playShow && !audioPlay)) ? <PlayIcon /> : <PauseIcon />}
+                                {playShow ? <PlayIcon /> : <PauseIcon />}
                                 <span>Слушать</span>
                             </Button>
                             <Button
@@ -134,6 +143,7 @@ const Playlist = (): JSX.Element => {
                                 track={audio}
                                 index={index}
                                 activeTrack={currentTrack.id === audio.id}
+                                playlist={playlist}
                             />
                         ))}
                     </ul>

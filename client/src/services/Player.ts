@@ -30,11 +30,11 @@ class Player implements IPlayer {
     }
 
     // for put src in audio
-    public async init(fileName: string, play: boolean): Promise<any> {
+    public async init(fileName: string): Promise<any> {
         const audio = this.music;
         if (!audio) return;
 
-        const promise = fetch(`${REACT_APP_API_URL}/audio/track/file/${fileName}`)
+        fetch(`${REACT_APP_API_URL}/audio/track/file/${fileName}`)
             .then(response => response.json())
             .then(data => {
                 audio.src = data.src;
@@ -43,14 +43,6 @@ class Player implements IPlayer {
             .catch(err => {
                 throw new Error(`Video playback failed: ${err.message}`);
             });
-
-        if (promise !== undefined) {
-            promise.then(() => {
-                audio[play ? "play" : "pause"]();
-            }).catch((err) => {
-                throw new Error(`Video playback failed: ${err.message}`);
-            });
-        }
     }
 
     // play/pause
