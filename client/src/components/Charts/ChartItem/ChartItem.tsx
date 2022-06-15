@@ -1,8 +1,4 @@
 import classes from "./ChartItem.module.sass";
-<<<<<<< HEAD
-=======
-
->>>>>>> 508dc407da35eae1d114c604f0ea20818d5bd830
 import PlaylistComponent, { IPlayListProps } from "../../PlayListComponent/PlayListComponent";
 
 export interface IChartsProps {

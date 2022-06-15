@@ -1,19 +1,11 @@
 const path = require("path");
 const fs = require("fs");
 const uuid = require("uuid");
-<<<<<<< HEAD
-const mime = require("mime");
-=======
->>>>>>> 508dc407da35eae1d114c604f0ea20818d5bd830
 
 const db = require("../db");
 const Message = require("../services/message.service");
 
 const rmHh = require("../helpers/removeHash.helper");
-<<<<<<< HEAD
-=======
-const adFlNe = require("../helpers/audioFileName.helper");
->>>>>>> 508dc407da35eae1d114c604f0ea20818d5bd830
 
 const { PROJECT_ROOT } = process.env;
 
@@ -26,11 +18,7 @@ class AudioController {
 			const file = req.files.file;
 			const musicName = file.name;
 			const musicExtname = path.extname(musicName);
-<<<<<<< HEAD
-			const allowedTypes = [".mp3", ".wav", ".ogg", ".m4a"];
-=======
 			const allowedTypes = [".mp3", ".wav", ".ogg"];
->>>>>>> 508dc407da35eae1d114c604f0ea20818d5bd830
 
 			// check extension
 			if (!allowedTypes.includes(musicExtname)) {
@@ -77,14 +65,10 @@ class AudioController {
 					return new Message(400, { success: false }).log(res, `У исполнителя ${owner.name} нет ключевых слов под слово ${filt}`);
 				}
 
-<<<<<<< HEAD
 				let audios = [newTrack.rows[0].id];
 
                 if (owner.audios) audios = audios.concat(owner.audios);
 
-=======
-				const audios = [ ...owner.audios, newTrack.rows[0].id ];
->>>>>>> 508dc407da35eae1d114c604f0ea20818d5bd830
 				const queryForUpdateOwner = `UPDATE owner set audios = $1 WHERE id = $2`;
 					
 				await db.query(queryForUpdateOwner, [audios, ows[i]]);
@@ -292,7 +276,6 @@ class AudioController {
 			return new Message(500, { success: false }).log(res, `Ошибка сервера: ${e.message}`);
 		}
 	};
-<<<<<<< HEAD
 
     // get all by id playlist
     async infoGetByPlaylist(req, res) {
@@ -345,8 +328,6 @@ class AudioController {
             return new Message(500, { success: false }).log(res, `Ошибка сервера: ${e.message}`);
         }
     }
-=======
->>>>>>> 508dc407da35eae1d114c604f0ea20818d5bd830
 }
 
 module.exports = new AudioController();

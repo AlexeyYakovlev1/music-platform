@@ -2,10 +2,6 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import classes from "./PlayList.module.sass";
 import cn from "classnames";
-<<<<<<< HEAD
-=======
-import { IUser } from "../../interfaces/user.interface";
->>>>>>> 508dc407da35eae1d114c604f0ea20818d5bd830
 import { ITrack } from "../../interfaces/audio.interfaces";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentPlaylist, setCurrentTrack } from "../../redux/actions/audio.actions";
@@ -15,7 +11,6 @@ import { ReactComponent as HeartIcon } from "../../templates/svgs/like.svg";
 import { ReactComponent as PlayIcon } from "../../templates/svgs/play.svg";
 import { ReactComponent as ShareIcon } from "../../templates/svgs/share.svg";
 import { ReactComponent as PauseIcon } from "../../templates/svgs/pause.svg";
-<<<<<<< HEAD
 import { IOwner } from "../../interfaces/user.interface";
 import { getInfo } from "../../http/playlists.http";
 import useMounted from "src/hooks/useIsMounted";
@@ -30,22 +25,11 @@ export interface IPlayListProps {
 }
 
 const PlaylistComponent = ({ id, title, cover, owners, name }: IPlayListProps): JSX.Element => {
-=======
-
-export interface IPlayListProps {
-    id: number; cover: string;
-    title: string; owners: Array<IUser>;
-    audios: Array<ITrack>; name: string;
-}
-
-const PlaylistComponent = ({ id, cover, title, owners, audios, name }: IPlayListProps): JSX.Element => {
->>>>>>> 508dc407da35eae1d114c604f0ea20818d5bd830
     const { currentPlaylist, audioPlay } = useSelector((state: any) => state.audio);
     const dispatch = useDispatch();
 
     const [hover, setHover] = React.useState<boolean>(false);
     const [activePlaylist, setActivePlaylist] = React.useState<boolean>(currentPlaylist.id === id);
-<<<<<<< HEAD
     const [tracks, setTracks] = React.useState<Array<ITrack>>([{
         time: "00:00",
         filt: "",
@@ -86,18 +70,6 @@ const PlaylistComponent = ({ id, cover, title, owners, audios, name }: IPlayList
     const playHandler = async() => {
         dispatch(setCurrentTrack(tracks[0], false));
         dispatch(setCurrentPlaylist({ id, cover, title, owners: singers, audios: tracks, name }));
-=======
-    
-    React.useEffect(() => {
-        setActivePlaylist(currentPlaylist.id === id);
-
-        // eslint-disable-next-line
-    }, [currentPlaylist]);
-
-    const playHandler = async() => {
-        dispatch(setCurrentTrack(audios[0], false));
-        dispatch(setCurrentPlaylist({ id, cover, title, owners, audios, name }));
->>>>>>> 508dc407da35eae1d114c604f0ea20818d5bd830
     }
 
     return (
@@ -139,11 +111,7 @@ const PlaylistComponent = ({ id, cover, title, owners, audios, name }: IPlayList
                     <NavLink to={`/playlist/${id}`}>{title}</NavLink>
                 </h3>
                 <span className={classes.owner}>
-<<<<<<< HEAD
                     {singers.map((owner, index) => {
-=======
-                    {owners.map((owner, index) => {
->>>>>>> 508dc407da35eae1d114c604f0ea20818d5bd830
                         return (
                             <NavLink key={owner.id} to={`/users/${owner.id}`}>
                                 {`${owner.name}${index < owners.length - 1 ? ", " : ""}`}

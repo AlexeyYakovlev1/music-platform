@@ -1,31 +1,21 @@
 import { IPlaylist } from "../interfaces/audio.interfaces";
 import React from "react";
 
-<<<<<<< HEAD
 const { REACT_APP_API_URL } = process.env;
 
-=======
->>>>>>> 508dc407da35eae1d114c604f0ea20818d5bd830
 type TSpanEl = HTMLSpanElement | null;
 type TDivEl = HTMLDivElement | null;
 type TMusic = HTMLAudioElement | null;
 type TInputRange = React.FormEvent<HTMLInputElement>;
 
 interface IPlayer {
-<<<<<<< HEAD
     play(play: boolean, src: string): void;
-=======
-    play(play: boolean): void;
->>>>>>> 508dc407da35eae1d114c604f0ea20818d5bd830
     volume(muted: boolean, event?: TInputRange): void;
     getProcent(value: number, endPoint: number): number;
     changeLine(line: TSpanEl): void;
     setProgress(wrapper: TDivEl, event: any): void;
     getTime(): string;
-<<<<<<< HEAD
     init(fileName: string, play: boolean): Promise<any>;
-=======
->>>>>>> 508dc407da35eae1d114c604f0ea20818d5bd830
 }
 
 class Player implements IPlayer {
@@ -39,7 +29,6 @@ class Player implements IPlayer {
         this.idxTrack = idxTrack;
     }
 
-<<<<<<< HEAD
     // for put src in audio
     public async init(fileName: string, play: boolean): Promise<any> {
         const audio = this.music;
@@ -83,25 +72,6 @@ class Player implements IPlayer {
             }).catch((err) => {
                 throw new Error(`Video playback failed: ${err.message}`);
             });
-=======
-    // play/pause
-    public play(play: boolean): void {
-        if (!this.music) return;
-
-        if (!play) {
-            this.music.pause();
-            return;
-        }
-
-        if (this.music !== undefined) {
-            this.music.play()
-                .then(() => {
-                    this.music && this.music.play();
-                })
-                .catch((err: any) => {
-                    throw new Error(`Ошибка при воспроизведении трека: ${err.message}`);
-                });
->>>>>>> 508dc407da35eae1d114c604f0ea20818d5bd830
         }
     };
 

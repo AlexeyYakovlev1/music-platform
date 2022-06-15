@@ -7,13 +7,10 @@ router.post("/track/add", AudioController.trackAdd);
 router.delete("/track/remove/:id", AudioController.trackRemove);
 router.get("/tracks", AudioController.trackGetAll);
 router.get("/track/:id", AudioController.trackGetOne);
-<<<<<<< HEAD
 router.get("/track/file/:name", AudioController.getFileByName);
 
 // other info
 router.get("/info/playlist/:id", AudioController.infoGetByPlaylist);
-=======
->>>>>>> 508dc407da35eae1d114c604f0ea20818d5bd830
 
 // playlists
 router.post("/playlist/add", AudioController.playlistAdd);

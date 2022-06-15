@@ -13,11 +13,8 @@ app.use(express.json({ extended: true }));
 
 app.use("/auth", require("./routes/auth.routes"));
 app.use("/audio", require("./routes/audio.routes"));
-<<<<<<< HEAD
 app.use("/filts", require("./routes/filts.routes"));
 app.use("/owner", require("./routes/owner.routes"));
-=======
->>>>>>> 508dc407da35eae1d114c604f0ea20818d5bd830
 
 const run = () => {
     app.listen(port, () => {
