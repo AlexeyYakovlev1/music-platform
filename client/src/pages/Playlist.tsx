@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setAudioPlay, setCurrentPlaylist } from "../redux/actions/audio.actions";
 import { getInfo } from "src/http/playlists.http";
 import useMounted from "src/hooks/useIsMounted";
+import LoaderContext from "src/context/loader.context";
 
 const Playlist = (): JSX.Element => {
     const { id } = useParams();
@@ -56,9 +57,15 @@ const Playlist = (): JSX.Element => {
     });
     const [playShow, setPlayShow] = React.useState<boolean>(true);
     const isMounted = useMounted();
+    const { setLoad } = React.useContext(LoaderContext);
+
+    if (!playlist.id) {
+        setLoad(true);
+    }
 
     React.useEffect(() => {
         if (id && isMounted) {
+            setLoad(true);
             getInfo(+id).then((response: any) => {
                 setPlaylist({
                     ...response.data.playlist,
@@ -67,6 +74,7 @@ const Playlist = (): JSX.Element => {
                 });
             });
             setActivePlaylist(currentPlaylist.id === +id);
+            setLoad(false);
         }
 
         // eslint-disable-next-line
@@ -74,15 +82,12 @@ const Playlist = (): JSX.Element => {
 
     React.useEffect(() => {
         if (id && isMounted) {
+            setLoad(true);
             if (playlist.audios.some((audio: any) => +audio.id === +currentTrack.id)) {
                 setPlayShow(false);
-
-                if (!audioPlay) {
-                    setPlayShow(true);
-                } else {
-                    setPlayShow(false);
-                }
+                setPlayShow(!audioPlay);
             }
+            setLoad(false);
         }
 
         // eslint-disable-next-line

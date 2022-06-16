@@ -53,8 +53,8 @@ const Track = ({ track, index, activeTrack, playlist }: ITrackProps): JSX.Elemen
         >
             <div className={classes.left}>
                 <span className={classes.index}>{!activeTrack && index + 1}</span>
-                {(activeTrack && visibleActive) && <span className={classes.activePlay}></span>}
-                {hover && <Button className={classes.playButton} onClick={playHandler}>
+                {(activeTrack && visibleActive && audioPlay) && <span className={classes.activePlay}></span>}
+                {(hover || (activeTrack && !audioPlay)) && <Button className={classes.playButton} onClick={playHandler}>
                     {
                         (!activeTrack || !audioPlay) ?
                         <PlayIcon width={20} height={20} /> :

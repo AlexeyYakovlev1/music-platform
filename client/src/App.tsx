@@ -5,6 +5,7 @@ import SearchContext from "./context/search.context";
 import UserWindowContext from "./context/UserWindow.context";import { useDispatch } from "react-redux";
 import { setAllPlaylists } from "./redux/actions/audio.actions";
 import { getPlaylists } from "./http/playlists.http";
+import LoaderContext from "./context/loader.context";
 
 const App = (): JSX.Element => {
     const isAuth: boolean = false;
@@ -12,21 +13,28 @@ const App = (): JSX.Element => {
 
     const [visible, setVisible] = React.useState<boolean>(false);
     const [visWindowUsr, setVisWindowUsr] = React.useState<boolean>(false);
+    const [load, setLoad] = React.useState<boolean>(false);
 
     const dispatch = useDispatch();
 
     React.useEffect(() => {
-        getPlaylists().then((response: any) => dispatch(setAllPlaylists(response.data.playlists)));
+        setLoad(true);
+        getPlaylists().then((response: any) => {
+            dispatch(setAllPlaylists(response.data.playlists))
+        });
+        setLoad(false);
 
         // eslint-disable-next-line
     }, []);
 
     return (
-        <SearchContext.Provider value={{ visible, setVisible }}>
-            <UserWindowContext.Provider value={{ visible: visWindowUsr, setVisible: setVisWindowUsr }}>
-                <Router>{routes}</Router>
-            </UserWindowContext.Provider>
-        </SearchContext.Provider>
+        <LoaderContext.Provider value={{ load, setLoad }}>
+            <SearchContext.Provider value={{ visible, setVisible }}>
+                <UserWindowContext.Provider value={{ visible: visWindowUsr, setVisible: setVisWindowUsr }}>
+                    <Router>{routes}</Router>
+                </UserWindowContext.Provider>
+            </SearchContext.Provider>
+        </LoaderContext.Provider>
     );
 }
 

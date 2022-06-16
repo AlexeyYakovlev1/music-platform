@@ -19,6 +19,7 @@ import { ReactComponent as PreviousIcon } from "../../templates/svgs/prev.svg";
 import { ReactComponent as LikeIcon } from "../../templates/svgs/like.svg";
 import { ReactComponent as PlusIcon } from "../../templates/svgs/plus.svg";
 import { ReactComponent as ShareIcon } from "../../templates/svgs/share.svg";
+import LoaderContext from "src/context/loader.context";
 
 const PlayerComponent = (): JSX.Element => {
     const volumeRef = React.useRef<HTMLInputElement>(null);
@@ -38,6 +39,7 @@ const PlayerComponent = (): JSX.Element => {
     const player = new Player(audioRef.current, idxCurrentTrack, currentPlaylist);
     const timeTrack = player.getTime();
     const isMounted = useMounted();
+    const { setLoad } = React.useContext(LoaderContext);
 
     const [singers, setSingers] = React.useState<Array<IOwner>>([{
         id: -1,
@@ -48,31 +50,39 @@ const PlayerComponent = (): JSX.Element => {
     }]);
 
     React.useEffect(() => {
+        setLoad(true);
         isMounted && getOwnersByTrack(currentTrack.id).then(response => setSingers(response.data.owners));
+        setLoad(false);
         // eslint-disable-next-line
     }, [isMounted, currentTrack, idxTrack]);
 
     React.useEffect(() => {
+        setLoad(true);
         isMounted && setIdxCurrentTrack(idxTrack);
+        setLoad(false);
         // eslint-disable-next-line
     }, [isMounted, idxTrack]);
 
     React.useEffect(() => {
+        setLoad(true);
         isMounted && player.volume(muted);
+        setLoad(false);
         // eslint-disable-next-line
     }, [isMounted, muted]);
 
     React.useEffect(() => {
+        setLoad(true);
         if (isMounted) {
             player.play(audioPlay, currentTrack.audio);
         }
-        
+        setLoad(false);
         // eslint-disable-next-line
     }, [isMounted, audioPlay, currentTrack.audio, idxTrack, currentPlaylist]);
 
     React.useEffect(() => {
+        setLoad(true);
         isMounted && player.init(currentTrack.audio);
-        
+        setLoad(false);
         // eslint-disable-next-line
     }, [isMounted, currentTrack.audio, currentPlaylist]);
 

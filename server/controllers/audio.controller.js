@@ -5,7 +5,6 @@ const { getAudioDurationInSeconds } = require('get-audio-duration');
 
 const db = require("../db");
 const Message = require("../services/message.service");
-const rmHh = require("../helpers/removeHash.helper");
 
 const { PROJECT_ROOT } = process.env;
 

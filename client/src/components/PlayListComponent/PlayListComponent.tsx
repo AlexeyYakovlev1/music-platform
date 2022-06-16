@@ -14,6 +14,7 @@ import { ReactComponent as PauseIcon } from "../../templates/svgs/pause.svg";
 import { IOwner } from "../../interfaces/user.interface";
 import { getInfo } from "../../http/playlists.http";
 import useMounted from "src/hooks/useIsMounted";
+import LoaderContext from "src/context/loader.context";
 
 export interface IPlayListProps {
     id: number;
@@ -27,6 +28,8 @@ export interface IPlayListProps {
 const PlaylistComponent = ({ id, title, cover, owners, name }: IPlayListProps): JSX.Element => {
     const { currentPlaylist, audioPlay } = useSelector((state: any) => state.audio);
     const dispatch = useDispatch();
+
+    const { setLoad } = React.useContext(LoaderContext);
 
     const [hover, setHover] = React.useState<boolean>(false);
     const [activePlaylist, setActivePlaylist] = React.useState<boolean>(currentPlaylist.id === id);
@@ -57,11 +60,13 @@ const PlaylistComponent = ({ id, title, cover, owners, name }: IPlayListProps): 
 
     React.useEffect(() => {
         if (id > 0 && isMounted) {
+            setLoad(true);
             getInfo(id).then((response: any) => {
                 setTracks(response.data.audios);
                 setSingers(response.data.owners);
             });
             setActivePlaylist(currentPlaylist.id === id);
+            setLoad(false);
         }
 
         // eslint-disable-next-line

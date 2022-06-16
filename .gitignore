@@ -15,9 +15,7 @@ client/build
 
 # misc
 client/.DS_Store
-client/templates/audio
 client/.env
-templates/music
 server/.env
 server/.env.local
 server/.env.development.local
