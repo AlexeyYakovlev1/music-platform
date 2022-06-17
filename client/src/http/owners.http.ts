@@ -6,3 +6,10 @@ export async function getOwnersByTrack(id: number) {
 
     return { data, response };
 }
+
+export async function getOneOwner(id: number) {
+    const response = await fetch(`${REACT_APP_API_URL}/owner/${id}`);
+    const data = await response.json();
+
+    return { data, response };
+}

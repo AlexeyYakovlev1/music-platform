@@ -118,3 +118,42 @@
         right: 17px
         display: grid
         grid-template-rows: repeat(auto-fill, 40px)
+
+.owner
+    display: grid
+    grid-template-rows: auto 1fr
+    gap: 50px
+    &Header
+        display: grid
+        grid-template-columns: 200px 1fr
+        gap: 30px
+        &Avatar
+            border-radius: 50%
+        &Info
+            &Type
+                text-transform: uppercase
+                letter-spacing: 1px
+                color: $grayDark
+                font-size: 13px
+                display: inline-block
+                margin-bottom: 10px
+            &Name
+                font-size: 45px
+                color: $black
+                font-weight: 700
+    &Body
+        &Text
+            font-size: 13px
+            color: $grayDark
+            display: inline-block
+            margin-top: 10px
+        &Title
+            color: $black
+            font-size: 20px
+        &TracksList
+            margin-top: 20px
+            width: calc(100% + 17px)
+            position: relative
+            right: 17px
+            display: grid
+            grid-template-rows: repeat(auto-fill, 40px)

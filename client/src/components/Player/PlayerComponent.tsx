@@ -186,7 +186,7 @@ const PlayerComponent = (): JSX.Element => {
                             </span>
                             <span className={classes.owner}>
                                 {singers.map((owner: IOwner, index: number) => (
-                                    <NavLink key={owner.id} to={`/users/${owner.name}`}>
+                                    <NavLink key={owner.id} to={`/owner/${owner.name}`}>
                                         {`${owner.name}${index < currentTrack.owners.length - 1 ? ", " : ""}`}
                                     </NavLink>
                                 ))}

@@ -33,8 +33,18 @@ class OwnerController {
             const { id } = req.params;
             const queryForFind = `SELECT * FROM owner WHERE id = $1`;
             const findOwner = await db.query(queryForFind, [id]);
+            const owner = findOwner.rows[0];
+            const audios = [];
 
-            return new Message(200, { success: true, owner: findOwner.rows[0] }).log(res);
+            for (let i = 0; i < owner.audios.length; i++) {
+                const audioId = owner.audios[i];
+                const queryForFindTrack = `SELECT * FROM track WHERE id = $1`;
+                const findTrack = await db.query(queryForFindTrack, [audioId]);
+
+                audios.push(findTrack.rows[0]);
+            }
+
+            return new Message(200, { success: true, audios, owner: owner }).log(res);
         } catch(e) {
             return new Message(500, { success: false }).log(res, `Ошибка сервера: ${e.message}`);
         }

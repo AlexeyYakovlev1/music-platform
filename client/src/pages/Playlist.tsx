@@ -113,7 +113,7 @@ const Playlist = (): JSX.Element => {
                             <ul className={classes.playlistOwners}>
                                 {playlist.owners.map((owner: any, index) => (
                                     <li key={owner.id} className={classes.playlistOwnersItem}>
-                                        <NavLink to={`/owners/${owner.id}`}>
+                                        <NavLink to={`/owner/${owner.id}`}>
                                             {`${owner.name}${index < playlist.owners.length - 1 ? ", " : ""}`}
                                         </NavLink>
                                     </li>

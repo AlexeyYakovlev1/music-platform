@@ -13,7 +13,7 @@ interface ITrackProps {
     track: ITrack;
     index: number;
     activeTrack: boolean;
-    playlist: IPlaylist;
+    playlist?: IPlaylist;
 }
 
 const Track = ({ track, index, activeTrack, playlist }: ITrackProps): JSX.Element => {
@@ -25,7 +25,7 @@ const Track = ({ track, index, activeTrack, playlist }: ITrackProps): JSX.Elemen
 
     const playHandler = () => {
         if (!activeTrack) {
-            dispatch(setCurrentPlaylist(playlist));
+            playlist && dispatch(setCurrentPlaylist(playlist));
             dispatch(setCurrentTrack(track, true));
             dispatch(setAudioPlay(true));
         } else {
