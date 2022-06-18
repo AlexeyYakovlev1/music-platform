@@ -36,7 +36,7 @@ const PlayerComponent = (): JSX.Element => {
     const [volume, setVolume] = React.useState(0.5);
     let [idxCurrentTrack, setIdxCurrentTrack] = React.useState(idxTrack);
 
-    const player = new Player(audioRef.current, idxCurrentTrack, currentPlaylist);
+    const player = new Player(audioRef.current, idxTrack, currentPlaylist);
     const timeTrack = player.getTime();
     const isMounted = useMounted();
     const { setLoad } = React.useContext(LoaderContext);
@@ -46,7 +46,8 @@ const PlayerComponent = (): JSX.Element => {
         name: "",
         audios: [],
         filts: [],
-        avatar: ""
+        avatar: "",
+        playlists: []
     }]);
 
     React.useEffect(() => {
@@ -101,11 +102,12 @@ const PlayerComponent = (): JSX.Element => {
 
     const switchTrack = (side: "PREV" | "NEXT") => {
         let copyIdx = idxCurrentTrack;
-
+        
         if (side === "PREV") {
             copyIdx--;
             if (copyIdx < 0) copyIdx = currentPlaylist.audios.length - 1;
         } else {
+
             copyIdx++;
             if (copyIdx > currentPlaylist.audios.length - 1) copyIdx = 0;
         }
@@ -186,7 +188,7 @@ const PlayerComponent = (): JSX.Element => {
                             </span>
                             <span className={classes.owner}>
                                 {singers.map((owner: IOwner, index: number) => (
-                                    <NavLink key={owner.id} to={`/owner/${owner.name}`}>
+                                    <NavLink key={owner.id} to={`/owner/playlists/${owner.name}`}>
                                         {`${owner.name}${index < currentTrack.owners.length - 1 ? ", " : ""}`}
                                     </NavLink>
                                 ))}

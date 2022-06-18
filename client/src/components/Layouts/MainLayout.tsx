@@ -5,7 +5,7 @@ import cn from "classnames";
 import Footer from "../Footer/Footer";
 import SearchContext from "../../context/search.context";
 import UserWindowContext from "../../context/UserWindow.context";
-import PlayerComponent from "../Player/PlayerComponent";
+import PlayerComponent from "../PlayerComponent/PlayerComponent";
 import { useSelector } from "react-redux";
 import LoaderContext from "src/context/loader.context";
 import Loader from "../UI/Loader/Loader";

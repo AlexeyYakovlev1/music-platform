@@ -213,8 +213,8 @@ class AudioController {
 				const owner = findOwner.rows[0];
 
 				if (owner.filts.some(item => item === name)) {
-					const queryForUpdate = `UPDATE owner set audios = $1 WHERE filts = $2`;
-					await db.query(queryForUpdate, [audioIds, owner.filts]);
+					const queryForUpdate = `UPDATE owner SET audios = $1, playlists = array_prepend($2, playlists) WHERE filts = $3`;
+					await db.query(queryForUpdate, [audioIds, newPlaylist.rows[0], owner.filts]);
 				} else {
 					return new Message(400, { success: false }).log(res, `У исполнителя '${owner.name}' фильтра под имя плейлиста '${name}'`);
 				};
@@ -232,12 +232,22 @@ class AudioController {
 			// find playlist
 			const { id } = req.params;
 			const queryForFindPlaylist = `SELECT * FROM playlist WHERE id = $1`;
+            const queryForFindOwners = `SELECT * FROM owner WHERE $1 = ANY (playlists)`;
+
 			const findPlaylist = await db.query(queryForFindPlaylist, [id]);
-			const playlist = findPlaylist.rows[0];
+			const findOwners = await db.query(queryForFindOwners, [id]);
+            
+            const playlist = findPlaylist.rows[0];
+            const owners = findOwners.rows[0];
 
 			if (!playlist) {
 				return new Message(400, { success: false }).log(res, `Плейлист по идентификатору ${id} не существует`);
 			}
+
+            for (let i = 0; i < owners.length; i++) {
+                const queryForUpdateOwner = `UPDATE owner SET playlists = array_remove(playlists, $1) WHERE id = $2`;
+                await db.query(queryForUpdateOwner, [id, owners[i].id]);
+            }
 
 			// remove playlist
 			const queryForDeletePlaylist = `DELETE FROM playlist WHERE id = $1`;

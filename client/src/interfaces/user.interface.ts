@@ -1,3 +1,5 @@
+import { IPlaylist } from "./audio.interfaces";
+
 export interface IUser {
     id: number;
     name: string;
@@ -12,4 +14,5 @@ export interface IOwner {
     audios: Array<number>;
     filts: Array<string>;
     avatar: string;
+    playlists: Array<IPlaylist>;
 }

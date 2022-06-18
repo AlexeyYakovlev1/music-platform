@@ -35,7 +35,12 @@ class OwnerController {
             const findOwner = await db.query(queryForFind, [id]);
             const owner = findOwner.rows[0];
             const audios = [];
+            const oldPlaylists = [];
+            const newPlaylists = [];
+            
+            let count = 0;
 
+            // audios
             for (let i = 0; i < owner.audios.length; i++) {
                 const audioId = owner.audios[i];
                 const queryForFindTrack = `SELECT * FROM track WHERE id = $1`;
@@ -44,7 +49,35 @@ class OwnerController {
                 audios.push(findTrack.rows[0]);
             }
 
-            return new Message(200, { success: true, audios, owner: owner }).log(res);
+            // oldPlaylists
+            for (let s = 0; s < owner.audios.length; s++) {
+                const audioId = owner.audios[s];
+                const queryForFindPlaylist = `SELECT * FROM playlist WHERE $1 = ANY (audios)`;
+                const findPlaylist = await db.query(queryForFindPlaylist, [audioId]);
+
+                if (count > newPlaylists.length) break;
+                
+                count++;
+                
+                oldPlaylists.push(findPlaylist.rows[0]);
+            }
+
+            // new playlists
+            for (let c = 0; c < oldPlaylists.length; c++) {
+                const playlist = oldPlaylists[c];
+                const audiosForCurrentPlaylist = [];
+
+                for (let j = 0; j < playlist.audios.length; j++) {
+                    const audioId = playlist.audios[j];
+                    const queryForFindTrack = `SELECT * FROM track WHERE id = $1`;
+                    const findTrack = await db.query(queryForFindTrack, [audioId]);
+                    audiosForCurrentPlaylist.push(findTrack.rows[0]);
+                }
+
+                newPlaylists.push({...playlist, audios: audiosForCurrentPlaylist});
+            }
+
+            return new Message(200, { success: true, audios, playlists: newPlaylists, owner: owner }).log(res);
         } catch(e) {
             return new Message(500, { success: false }).log(res, `Ошибка сервера: ${e.message}`);
         }

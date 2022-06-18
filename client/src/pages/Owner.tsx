@@ -1,15 +1,15 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { NavLink, useLocation, useParams } from "react-router-dom";
 import MainLayout from "src/components/Layouts/MainLayout";
-import Track from "src/components/Track/Track";
 import LoaderContext from "src/context/loader.context";
 import useMounted from "src/hooks/useIsMounted";
 import { getOneOwner } from "src/http/owners.http";
 import { IPlaylist, ITrack } from "src/interfaces/audio.interfaces";
 import { IOwner } from "src/interfaces/user.interface";
-import { setCurrentPlaylist, setCurrentTrack } from "src/redux/actions/audio.actions";
 import classes from "./Pages.module.sass";
+import cn from "classnames";
+import OwnerTracks from "src/components/Owner/OwnerTracks";
+import OwnerPlaylists from "src/components/Owner/OwnerPlaylists";
 
 const Owner = (): JSX.Element => {
     const [owner, setOwner] = React.useState<IOwner>({
@@ -17,9 +17,10 @@ const Owner = (): JSX.Element => {
         name: "",
         audios: [],
         filts: [],
-        avatar: ""
+        avatar: "",
+        playlists: []
     });
-    const [playlist, setPlaylist]= React.useState<IPlaylist>({
+    const [playlists, setPlaylists] = React.useState<Array<IPlaylist>>([{
         name: "",
         id: -1,
         title: "",
@@ -29,7 +30,8 @@ const Owner = (): JSX.Element => {
                 name: "",
                 audios: [],
                 filts: [],
-                avatar: ""
+                avatar: "",
+                playlists: []
             }
         ],
         audios: [
@@ -44,7 +46,8 @@ const Owner = (): JSX.Element => {
                         name: "",
                         audios: [],
                         filts: [],
-                        avatar: ""
+                        avatar: "",
+                        playlists: []
                     }
                 ],
                 audio: "",
@@ -52,38 +55,64 @@ const Owner = (): JSX.Element => {
             }
         ],
         cover: ""
-    });
+    }]);
+    const [tracks, setTracks] = React.useState<Array<ITrack>>([{
+                duration: "00:00",
+                filt: "",
+                title: "",
+                id: -1,
+                owners: [
+                    {
+                        id: -1,
+                        name: "",
+                        audios: [],
+                        filts: [],
+                        avatar: "",
+                        playlists: []
+                    }
+                ],
+                audio: "",
+                cover: ""
+    }]);
+    const currentPlaylist: IPlaylist = {
+        name: `${owner.name}-all`,
+        id: 0,
+        title: `Все треки ${owner.name}`,
+        owners: [{...owner}],
+        audios: tracks,
+        cover: "none"
+    };
 
-    const { id } = useParams();
-    const isMounted = useMounted();
+    const { type, id } = useParams();
+    const { pathname } = useLocation();
     
+    const isMounted = useMounted();
     const { setLoad } = React.useContext(LoaderContext);
-    const { currentTrack } = useSelector((state: any) => state.audio);
-    const dispatch = useDispatch();
+
+    const linksRoutes = [
+        {
+            name: "Плейлисты",
+            url: `/owner/playlists/${id}`
+        },
+        {
+            name: "Треки",
+            url: `/owner/tracks/${id}`
+        }
+    ];
 
     React.useEffect(() => {
         if (id && isMounted) {
             setLoad(true);
             getOneOwner(+id).then((response: any) => {
                 setOwner(response.data.owner);
-
-                const updatePlaylist = {
-                    name: `all`,
-                    id: 0,
-                    title: `Все треки ${owner.name}`,
-                    owners: [{...owner}],
-                    audios: response.data.audios,
-                    cover: "none"
-                };
-
-                setPlaylist(updatePlaylist);
+                setTracks(response.data.audios);
+                setPlaylists(response.data.playlists);
             });
-            
             setLoad(false);
         }
-
+        
         // eslint-disable-next-line
-    }, [isMounted, id]);
+    }, [isMounted, id, pathname]);
 
     return (
         <MainLayout>
@@ -96,24 +125,24 @@ const Owner = (): JSX.Element => {
                     </div>
                 </header>
                 <div className={classes.ownerBody}>
-                    {(playlist.audios.length) ?
-                        <React.Fragment>
-                            <h2 className={classes.ownerBodyTitle}>Треки</h2>
-                            <ul className={classes.ownerBodyTracksList}>
-                                {playlist.audios.map((track: ITrack, index: number) => (
-                                    <Track
-                                        key={track.id}
-                                        track={track}
-                                        index={index}
-                                        activeTrack={track.id === currentTrack.id}
-                                    />
+                    <header className={classes.ownerBodyHeader}>
+                        <nav className={classes.ownerBodyNav}>
+                            <ul className={classes.ownerBodyNavList}>
+                                {linksRoutes.map(link => (
+                                    <li
+                                        key={link.url}
+                                        className={cn(classes.ownerBodyNavItem, {
+                                            [classes.ownerBodyNavItemActive]: link.url === pathname
+                                        })}
+                                    >
+                                        <NavLink to={link.url}>{link.name}</NavLink>
+                                    </li>
                                 ))}
                             </ul>
-                        </React.Fragment>
-                        : <span className={classes.ownerBodyText}>
-                            У этого исполнителя нет музыки
-                        </span>
-                    }
+                        </nav>
+                    </header>
+                    {type === "tracks" && <OwnerTracks playlist={currentPlaylist} tracks={tracks} />}
+                    {type === "playlists" && <OwnerPlaylists playlists={playlists} />}
                 </div>
             </div>
         </MainLayout>

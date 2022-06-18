@@ -21,7 +21,8 @@ const initialState: IInitialState = {
                 name: "",
                 audios: [],
                 filts: [],
-                avatar: ""
+                avatar: "",
+                playlists: []
             }
         ],
         audio: "",
@@ -37,7 +38,8 @@ const initialState: IInitialState = {
                 name: "",
                 audios: [],
                 filts: [],
-                avatar: ""
+                avatar: "",
+                playlists: []
             }
         ],
         audios: [
@@ -52,7 +54,8 @@ const initialState: IInitialState = {
                         name: "",
                         audios: [],
                         filts: [],
-                        avatar: ""
+                        avatar: "",
+                        playlists: []
                     }
                 ],
                 audio: "",
@@ -72,7 +75,8 @@ const initialState: IInitialState = {
                 name: "",
                 audios: [],
                 filts: [],
-                avatar: ""
+                avatar: "",
+                playlists: []
             }
         ],
         audios: [
@@ -87,7 +91,8 @@ const initialState: IInitialState = {
                         name: "",
                         audios: [],
                         filts: [],
-                        avatar: ""
+                        avatar: "",
+                        playlists: []
                     }
                 ],
                 audio: "",

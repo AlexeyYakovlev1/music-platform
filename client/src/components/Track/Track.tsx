@@ -7,13 +7,13 @@ import { ReactComponent as PauseIcon } from "../../templates/svgs/pause.svg";
 import { ReactComponent as LikeIcon } from "../../templates/svgs/like.svg";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setAudioPlay, setCurrentPlaylist, setCurrentTrack } from "../../redux/actions/audio.actions";
+import { setAudioPlay, setCurrentPlaylist, setCurrentTrack, setIdxTrack } from "../../redux/actions/audio.actions";
 
 interface ITrackProps {
     track: ITrack;
     index: number;
     activeTrack: boolean;
-    playlist?: IPlaylist;
+    playlist: IPlaylist;
 }
 
 const Track = ({ track, index, activeTrack, playlist }: ITrackProps): JSX.Element => {
@@ -25,7 +25,8 @@ const Track = ({ track, index, activeTrack, playlist }: ITrackProps): JSX.Elemen
 
     const playHandler = () => {
         if (!activeTrack) {
-            playlist && dispatch(setCurrentPlaylist(playlist));
+            dispatch(setIdxTrack(index));
+            dispatch(setCurrentPlaylist(playlist));
             dispatch(setCurrentTrack(track, true));
             dispatch(setAudioPlay(true));
         } else {

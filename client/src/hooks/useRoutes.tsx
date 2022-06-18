@@ -12,7 +12,7 @@ const useRoutes = (isAuth: boolean): JSX.Element => {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/playlist/:id" element={<Playlist />} />
-            <Route path="/owner/:id" element={<Owner />} />
+            <Route path="/owner/:type/:id" element={<Owner />} />
         </Routes>
     );
 };

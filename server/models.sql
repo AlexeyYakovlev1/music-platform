@@ -12,7 +12,8 @@ CREATE TABLE track(
     owners INTEGER ARRAY NOT NULL,
     audio VARCHAR(255) NOT NULL,
     cover VARCHAR(255) NOT NULL DEFAULT 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiC3Ba9xwS9m8DfRYSyhygOjmq1KHOExvj9yNkSidc7eSPnfj0y5yEvHkujqWmZceI15Y&usqp=CAU',
-    title VARCHAR(255) NOT NULL
+    title VARCHAR(255) NOT NULL,
+    duration VARCHAR(255) NOT NULL DEFAULT '0:00'
 );
 
 CREATE TABLE playlist(
@@ -30,4 +31,5 @@ CREATE TABLE owner(
     audios INTEGER ARRAY,
     filts VARCHAR(255) ARRAY,
     avatar VARCHAR(255) NOT NULL DEFAULT 'https://www.kindpng.com/picc/m/97-979609_silhouette-male-photography-clip-art-man-head-silhouette.png'
+    playlists INTEGER ARRAY
 );

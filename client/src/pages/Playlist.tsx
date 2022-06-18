@@ -31,7 +31,8 @@ const Playlist = (): JSX.Element => {
                 name: "",
                 audios: [],
                 filts: [],
-                avatar: ""
+                avatar: "",
+                playlists: []
             }
         ],
         audios: [
@@ -46,7 +47,8 @@ const Playlist = (): JSX.Element => {
                         name: "",
                         audios: [],
                         filts: [],
-                        avatar: ""
+                        avatar: "",
+                        playlists: []
                     }
                 ],
                 audio: "",
@@ -113,7 +115,7 @@ const Playlist = (): JSX.Element => {
                             <ul className={classes.playlistOwners}>
                                 {playlist.owners.map((owner: any, index) => (
                                     <li key={owner.id} className={classes.playlistOwnersItem}>
-                                        <NavLink to={`/owner/${owner.id}`}>
+                                        <NavLink to={`/owner/playlists/${owner.id}`}>
                                             {`${owner.name}${index < playlist.owners.length - 1 ? ", " : ""}`}
                                         </NavLink>
                                     </li>

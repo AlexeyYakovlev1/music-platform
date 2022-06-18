@@ -18,10 +18,9 @@ import LoaderContext from "src/context/loader.context";
 
 export interface IPlayListProps {
     id: number;
-    audios: Array<number>;
     title: string;
     cover: string;
-    owners: Array<number>;
+    owners: Array<number | IOwner>;
     name: string;
 }
 
@@ -43,7 +42,8 @@ const PlaylistComponent = ({ id, title, cover, owners, name }: IPlayListProps): 
             name: "",
             audios: [],
             filts: [],
-            avatar: ""
+            avatar: "",
+            playlists: []
         }],
         audio: "",
         cover: ""
@@ -53,7 +53,8 @@ const PlaylistComponent = ({ id, title, cover, owners, name }: IPlayListProps): 
         name: "",
         audios: [],
         filts: [],
-        avatar: ""
+        avatar: "",
+        playlists: []
     }]);
 
     const isMounted = useMounted();
@@ -104,8 +105,6 @@ const PlaylistComponent = ({ id, title, cover, owners, name }: IPlayListProps): 
                 </div>}
                 {(activePlaylist && audioPlay) && <div className={classes.activePlay}></div>}
                 <img
-                    width={200}
-                    height={200}
                     className={classes.cover}
                     src={cover}
                     alt="cover"
@@ -118,7 +117,7 @@ const PlaylistComponent = ({ id, title, cover, owners, name }: IPlayListProps): 
                 <span className={classes.owner}>
                     {singers.map((owner, index) => {
                         return (
-                            <NavLink key={owner.id} to={`/owner/${owner.id}`}>
+                            <NavLink key={owner.id} to={`/owner/playlists/${owner.id}`}>
                                 {`${owner.name}${index < owners.length - 1 ? ", " : ""}`}
                             </NavLink>
                         )
