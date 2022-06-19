@@ -14,6 +14,8 @@ import { setAudioPlay, setCurrentPlaylist } from "../redux/actions/audio.actions
 import { getInfo } from "src/http/playlists.http";
 import useMounted from "src/hooks/useIsMounted";
 import LoaderContext from "src/context/loader.context";
+import ModalContext from "src/context/modal.context";
+import Modal from "src/components/UI/Modal/Modal";
 
 const Playlist = (): JSX.Element => {
     const { id } = useParams();
@@ -60,6 +62,7 @@ const Playlist = (): JSX.Element => {
     const [playShow, setPlayShow] = React.useState<boolean>(true);
     const isMounted = useMounted();
     const { setLoad } = React.useContext(LoaderContext);
+    const { setVisible } = React.useContext(ModalContext);
 
     if (!playlist.id) {
         setLoad(true);
@@ -100,9 +103,16 @@ const Playlist = (): JSX.Element => {
 
     return (
 		<MainLayout>
+            <Modal>
+                <img src={playlist.cover} alt={`cover for ${playlist.title} playlist`} />
+            </Modal>
 			<div className={classes.playlist}>
 				<header className={classes.playlistHeader}>
-                    <img src={playlist.cover} alt={`cover for ${playlist.title} playlist`} />
+                    <img
+                        onClick={() => setVisible(true)}
+                        src={playlist.cover}
+                        alt={`cover for ${playlist.title} playlist`}
+                    />
                     <div className={classes.playlistInfo}>
                         <div className={classes.playlistInfoTop}>
                             <h1 className={classes.playlistTitle}>{playlist.title}</h1>

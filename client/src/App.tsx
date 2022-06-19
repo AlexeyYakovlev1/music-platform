@@ -6,6 +6,7 @@ import UserWindowContext from "./context/UserWindow.context";import { useDispatc
 import { setAllPlaylists } from "./redux/actions/audio.actions";
 import { getPlaylists } from "./http/playlists.http";
 import LoaderContext from "./context/loader.context";
+import ModalContext from "./context/modal.context";
 
 const App = (): JSX.Element => {
     const isAuth: boolean = false;
@@ -14,16 +15,14 @@ const App = (): JSX.Element => {
     const [visible, setVisible] = React.useState<boolean>(false);
     const [visWindowUsr, setVisWindowUsr] = React.useState<boolean>(false);
     const [load, setLoad] = React.useState<boolean>(false);
+    const [modalVisible, setModalVisible] = React.useState<boolean>(false);
 
     const dispatch = useDispatch();
 
     React.useEffect(() => {
         setLoad(true);
-        getPlaylists().then((response: any) => {
-            dispatch(setAllPlaylists(response.data.playlists))
-        });
+        getPlaylists().then((response: any) => dispatch(setAllPlaylists(response.data.playlists)));
         setLoad(false);
-
         // eslint-disable-next-line
     }, []);
 
@@ -31,7 +30,9 @@ const App = (): JSX.Element => {
         <LoaderContext.Provider value={{ load, setLoad }}>
             <SearchContext.Provider value={{ visible, setVisible }}>
                 <UserWindowContext.Provider value={{ visible: visWindowUsr, setVisible: setVisWindowUsr }}>
-                    <Router>{routes}</Router>
+                    <ModalContext.Provider value={{ visible: modalVisible, setVisible: setModalVisible }}>
+                        <Router>{routes}</Router>
+                    </ModalContext.Provider>
                 </UserWindowContext.Provider>
             </SearchContext.Provider>
         </LoaderContext.Provider>

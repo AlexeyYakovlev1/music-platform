@@ -214,7 +214,7 @@ class AudioController {
 
 				if (owner.filts.some(item => item === name)) {
 					const queryForUpdate = `UPDATE owner SET audios = $1, playlists = array_prepend($2, playlists) WHERE filts = $3`;
-					await db.query(queryForUpdate, [audioIds, newPlaylist.rows[0], owner.filts]);
+					await db.query(queryForUpdate, [audioIds, newPlaylist.rows[0].id, owner.filts]);
 				} else {
 					return new Message(400, { success: false }).log(res, `У исполнителя '${owner.name}' фильтра под имя плейлиста '${name}'`);
 				};

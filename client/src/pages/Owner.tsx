@@ -10,6 +10,8 @@ import classes from "./Pages.module.sass";
 import cn from "classnames";
 import OwnerTracks from "src/components/Owner/OwnerTracks";
 import OwnerPlaylists from "src/components/Owner/OwnerPlaylists";
+import ModalContext from "src/context/modal.context";
+import Modal from "src/components/UI/Modal/Modal";
 
 const Owner = (): JSX.Element => {
     const [owner, setOwner] = React.useState<IOwner>({
@@ -85,9 +87,10 @@ const Owner = (): JSX.Element => {
 
     const { type, id } = useParams();
     const { pathname } = useLocation();
-    
     const isMounted = useMounted();
+
     const { setLoad } = React.useContext(LoaderContext);
+    const { setVisible } = React.useContext(ModalContext);
 
     const linksRoutes = [
         {
@@ -116,9 +119,17 @@ const Owner = (): JSX.Element => {
 
     return (
         <MainLayout>
+            <Modal>
+                <img src={owner.avatar} alt={owner.name} />
+            </Modal>
             <div className={classes.owner}>
                 <header className={classes.ownerHeader}>
-                    <img className={classes.ownerHeaderAvatar} src={owner.avatar} alt={owner.name} />
+                    <img
+                        onClick={() => setVisible(true)}
+                        className={classes.ownerHeaderAvatar}
+                        src={owner.avatar}
+                        alt={owner.name}
+                    />
                     <div className={classes.ownerHeaderInfo}>
                         <span className={classes.ownerHeaderInfoType}>исполнитель</span>
                         <h1 className={classes.ownerHeaderInfoName}>{owner.name}</h1>
