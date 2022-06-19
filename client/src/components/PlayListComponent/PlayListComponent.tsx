@@ -117,7 +117,7 @@ const PlaylistComponent = ({ id, title, cover, owners, name }: IPlayListProps): 
                 <span className={classes.owner}>
                     {singers.map((owner, index) => {
                         return (
-                            <NavLink key={owner.id} to={`/owner/playlists/${owner.id}`}>
+                            <NavLink key={owner.id} to={`/owner/${owner.id}/playlists`}>
                                 {`${owner.name}${index < owners.length - 1 ? ", " : ""}`}
                             </NavLink>
                         )

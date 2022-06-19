@@ -199,3 +199,45 @@
             gap: 13px
             position: relative
             right: 10px
+
+.error
+    margin-top: 50px
+    display: grid
+    grid-template-rows: auto 1fr
+    gap: 50px
+    &Header
+        display: grid
+        grid-template-rows: auto 1fr auto
+        gap: 15px
+        &Title
+            margin-bottom: 10px
+            font-size: 45px
+            color: $black
+        &Text
+            font-size: 13px
+            color: $black
+            & a
+                color: $blue
+                &:hover
+                    color: $red
+    &Down
+        display: grid
+        grid-template-rows: auto 1fr
+        gap: 10px
+        &Title
+            font-size: 22px
+            color: $black
+            font-weight: 400
+            letter-spacing: .5px
+        &Filts
+            display: flex
+            align-items: center
+            flex-wrap: wrap
+            & li
+                color: $grayDark
+                font-size: 18px
+                margin-bottom: 5px
+                &:hover
+                    color: $red
+                &:not(:first-child)
+                    margin-left: 3px

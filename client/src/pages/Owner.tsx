@@ -92,11 +92,11 @@ const Owner = (): JSX.Element => {
     const linksRoutes = [
         {
             name: "Плейлисты",
-            url: `/owner/playlists/${id}`
+            url: `/owner/${id}/playlists`
         },
         {
             name: "Треки",
-            url: `/owner/tracks/${id}`
+            url: `/owner/${id}/tracks`
         }
     ];
 

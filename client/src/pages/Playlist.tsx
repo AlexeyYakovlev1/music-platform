@@ -66,34 +66,28 @@ const Playlist = (): JSX.Element => {
     }
 
     React.useEffect(() => {
+        !id && setLoad(true);
+        
         if (id && isMounted) {
-            setLoad(true);
             getInfo(+id).then((response: any) => {
                 setPlaylist({
                     ...response.data.playlist,
                     audios: response.data.audios,
                     owners: response.data.owners
                 });
+                
+                if (response.data.audios.some((audio: any) => +audio.id === +currentTrack.id)) {
+                    setPlayShow(false);
+                    setPlayShow(!audioPlay);
+                }
             });
+
             setActivePlaylist(currentPlaylist.id === +id);
             setLoad(false);
         }
 
         // eslint-disable-next-line
     }, [isMounted, currentPlaylist, id, audioPlay, currentTrack]);
-
-    React.useEffect(() => {
-        if (id && isMounted) {
-            setLoad(true);
-            if (playlist.audios.some((audio: any) => +audio.id === +currentTrack.id)) {
-                setPlayShow(false);
-                setPlayShow(!audioPlay);
-            }
-            setLoad(false);
-        }
-
-        // eslint-disable-next-line
-    }, [isMounted, id, audioPlay, currentPlaylist, currentTrack]);
 
     const playHandler = () => {
         if (!activePlaylist) {
@@ -115,7 +109,7 @@ const Playlist = (): JSX.Element => {
                             <ul className={classes.playlistOwners}>
                                 {playlist.owners.map((owner: any, index) => (
                                     <li key={owner.id} className={classes.playlistOwnersItem}>
-                                        <NavLink to={`/owner/playlists/${owner.id}`}>
+                                        <NavLink to={`/owner/${owner.id}/playlists`}>
                                             {`${owner.name}${index < playlist.owners.length - 1 ? ", " : ""}`}
                                         </NavLink>
                                     </li>

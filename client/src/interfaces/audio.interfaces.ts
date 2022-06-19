@@ -18,3 +18,8 @@ export interface IPlaylist {
     owners: Array<IOwner>;
     name: string;
 }
+
+export interface IFilt {
+    id: number;
+    name: string;
+}

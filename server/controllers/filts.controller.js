@@ -20,6 +20,17 @@ class FiltsController {
             return new Message(500, { success: false }).log(res, `Ошибка сервера: ${e.message}`);
         }
     };
+
+    async getAll(req, res) {
+        try {
+            const queryForFind = `SELECT * FROM filt`;
+            const filts = await db.query(queryForFind);
+
+            return new Message(200, { success: true, filts: filts.rows }).log(res);
+        } catch(e) {
+            return new Message(500, { success: false }).log(res, `Ошибка сервера: ${e.message}`);
+        }
+    };
 }
 
 module.exports = new FiltsController();

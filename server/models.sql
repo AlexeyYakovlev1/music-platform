@@ -33,3 +33,8 @@ CREATE TABLE owner(
     avatar VARCHAR(255) NOT NULL DEFAULT 'https://www.kindpng.com/picc/m/97-979609_silhouette-male-photography-clip-art-man-head-silhouette.png'
     playlists INTEGER ARRAY
 );
+
+CREATE TABLE filt(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE
+);
