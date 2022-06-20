@@ -78,14 +78,14 @@ const PlayerComponent = (): JSX.Element => {
         }
         setLoad(false);
         // eslint-disable-next-line
-    }, [isMounted, audioPlay, currentTrack.audio, idxTrack, currentPlaylist]);
+    }, [isMounted, audioPlay, idxTrack, currentPlaylist]);
 
     React.useEffect(() => {
         setLoad(true);
         isMounted && player.init(currentTrack.audio);
         setLoad(false);
         // eslint-disable-next-line
-    }, [isMounted, currentTrack.audio, currentPlaylist]);
+    }, [isMounted, currentTrack.audio]);
 
     const volumeRangeHandler = (event: React.FormEvent<HTMLInputElement>) => {
         if (!volumeRef.current) return;
@@ -183,12 +183,10 @@ const PlayerComponent = (): JSX.Element => {
                             <img width={50} height={50} src={currentTrack.cover} alt="cover" />
                         </NavLink>
                         <div className={classes.musicInfo}>
-                            <span className={classes.name}>
-                                <NavLink to="/">{currentTrack.title}</NavLink>
-                            </span>
+                            <span className={classes.name}>{currentTrack.title}</span>
                             <span className={classes.owner}>
                                 {singers.map((owner: IOwner, index: number) => (
-                                    <NavLink key={owner.id} to={`/owner/${owner.name}/playlists`}>
+                                    <NavLink key={owner.id} to={`/owner/${owner.id}/playlists`}>
                                         {`${owner.name}${index < currentTrack.owners.length - 1 ? ", " : ""}`}
                                     </NavLink>
                                 ))}
