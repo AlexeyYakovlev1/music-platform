@@ -9,6 +9,8 @@ import PlayerComponent from "../PlayerComponent/PlayerComponent";
 import { useSelector } from "react-redux";
 import LoaderContext from "src/context/loader.context";
 import Loader from "../UI/Loader/Loader";
+import Alert from "../UI/Alert/Alert";
+import AlertContext from "src/context/alert.context";
 
 interface IMainLayoutProps {
     children: React.ReactNode;
@@ -18,7 +20,8 @@ const MainLayout = ({ children }: IMainLayoutProps): JSX.Element => {
     const { setVisible } = React.useContext(SearchContext);
     const { setVisible: setUserVisible } = React.useContext(UserWindowContext);
     const { load } = React.useContext(LoaderContext);
-    
+    const { info } = React.useContext(AlertContext);
+
     const { currentTrack }: any = useSelector((state: any) => state.audio);
 
     const handler = () => {
@@ -28,6 +31,7 @@ const MainLayout = ({ children }: IMainLayoutProps): JSX.Element => {
 
     return (
         <div className={cn(classes.layout, "container")} onClick={handler}>
+            {info.text && <Alert />}
             <Header />
             <div className={classes.body}>
                 {load ? <Loader /> : children}

@@ -7,7 +7,7 @@ class AuthController {
     async register(req, res) {
         try {
             const { name, email, password } = req.body;
-            const queryForFind = `SELECT * FROM person WHERE email = `;
+            const queryForFind = `SELECT * FROM person WHERE email = $1`;
             const findUser = await db.query(queryForFind, [email]);
             
             if (findUser.rows[0]) {

@@ -7,6 +7,8 @@ import { setAllPlaylists } from "./redux/actions/audio.actions";
 import { getPlaylists } from "./http/playlists.http";
 import LoaderContext from "./context/loader.context";
 import ModalContext from "./context/modal.context";
+import { IInfo } from "./interfaces/alert.interfaces";
+import AlertContext from "./context/alert.context";
 
 const App = (): JSX.Element => {
     const isAuth: boolean = false;
@@ -16,6 +18,7 @@ const App = (): JSX.Element => {
     const [visWindowUsr, setVisWindowUsr] = React.useState<boolean>(false);
     const [load, setLoad] = React.useState<boolean>(false);
     const [modalVisible, setModalVisible] = React.useState<boolean>(false);
+    const [info, setInfo] = React.useState<IInfo>({ text: "", type: "SUCCESS" });
 
     const dispatch = useDispatch();
 
@@ -27,15 +30,17 @@ const App = (): JSX.Element => {
     }, []);
 
     return (
-        <LoaderContext.Provider value={{ load, setLoad }}>
-            <SearchContext.Provider value={{ visible, setVisible }}>
-                <UserWindowContext.Provider value={{ visible: visWindowUsr, setVisible: setVisWindowUsr }}>
-                    <ModalContext.Provider value={{ visible: modalVisible, setVisible: setModalVisible }}>
-                        <Router>{routes}</Router>
-                    </ModalContext.Provider>
-                </UserWindowContext.Provider>
-            </SearchContext.Provider>
-        </LoaderContext.Provider>
+        <AlertContext.Provider value={{ info, setInfo }}>
+            <LoaderContext.Provider value={{ load, setLoad }}>
+                <SearchContext.Provider value={{ visible, setVisible }}>
+                    <UserWindowContext.Provider value={{ visible: visWindowUsr, setVisible: setVisWindowUsr }}>
+                        <ModalContext.Provider value={{ visible: modalVisible, setVisible: setModalVisible }}>
+                            <Router>{routes}</Router>
+                        </ModalContext.Provider>
+                    </UserWindowContext.Provider>
+                </SearchContext.Provider>
+            </LoaderContext.Provider>
+        </AlertContext.Provider>
     );
 }
 

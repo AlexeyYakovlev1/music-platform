@@ -8,6 +8,7 @@ import UserWindowContext from "../../context/UserWindow.context";
 import User from "../User/User";
 import Button from "../UI/Button/Button";
 import { ReactComponent as SearchIcon } from "../../templates/svgs/search.svg";
+import { useSelector } from "react-redux";
 
 export interface IMenu {
     name: string;
@@ -18,7 +19,7 @@ const Header = (): JSX.Element => {
     const { visible, setVisible } = React.useContext(SearchContext);
     const { setVisible: setUserVisible } = React.useContext(UserWindowContext);
 
-    const isAuth = true;
+    const isAuth = useSelector((state: any) => state.user.isAuth);
 
     const location:any = useLocation();
     const menu: Array<IMenu> = [
