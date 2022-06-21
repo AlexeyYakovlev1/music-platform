@@ -2,7 +2,7 @@ import Cookies from "js-cookie";
 import { IActionUser } from "src/interfaces/redux.interfaces";
 
 const initialState = {
-    user: {
+    info: {
         id: -1,
         name: "",
         email: "",
@@ -21,7 +21,7 @@ export default function userReducer(state = initialState, action: IActionUser) {
                 Cookies.remove("token");
 
                 return {
-                    user: {
+                    info: {
                         id: -1,
                         name: "",
                         email: "",
@@ -33,7 +33,7 @@ export default function userReducer(state = initialState, action: IActionUser) {
             };
 
             return {
-                user: action.payload,
+                info: action.payload,
                 isAuth: true
             };
         default:

@@ -244,3 +244,94 @@
                     color: $red
                 &:not(:first-child)
                     margin-left: 3px
+
+.user
+    display: grid
+    grid-template-rows: auto 1fr
+    gap: 50px
+    &Header
+        display: grid
+        grid-template-columns: 200px 1fr
+        gap: 30px
+        min-height: 200px
+        &Avatar
+            border-radius: 50%
+            cursor: pointer
+        &Info
+            display: grid
+            grid-template-rows: 1fr auto
+            gap: 20px
+            &Type
+                text-transform: uppercase
+                letter-spacing: 1px
+                color: $grayDark
+                font-size: 13px
+                display: inline-block
+                margin-bottom: 10px
+            &Name
+                font-size: 45px
+                color: $black
+                font-weight: 700
+            &Actions
+                border-radius: 50%
+                margin-top: auto
+                &Button
+                    width: 132px
+                    border-radius: 15px !important
+                    & a
+                        display: flex
+                        align-items: center
+                        & span
+                            font-size: 13px
+                            color: $black
+                            display: block
+                            margin-left: 8px
+                            font-weight: bold
+    &Body
+        display: grid
+        grid-template-rows: repeat(auto, 1fr)
+        gap: 30px
+        &Header
+            border-bottom: 1px solid $gray
+        &Nav
+            &List
+                display: flex
+                align-items: center
+            &Item
+                padding-bottom: 5px
+                border-bottom: 3px solid transparent
+                text-transform: uppercase
+                color: $grayDark
+                font-weight: 600
+                font-size: 13px
+                letter-spacing: 1px
+                &Active
+                    color: $black
+                    border-color: $red
+                &:not(:first-child)
+                    margin-left: 40px
+                & a:hover
+                    color: $red
+        &Text
+            font-size: 13px
+            color: $grayDark
+            display: inline-block
+            margin-top: 10px
+        &Title
+            color: $black
+            font-size: 20px
+        &TracksList
+            margin-top: 20px
+            width: calc(100% + 17px)
+            position: relative
+            right: 17px
+            display: grid
+            grid-template-rows: repeat(auto-fill, 40px)
+        &PlaylistsList
+            margin-top: 20px
+            display: grid
+            width: calc(100% + 10px)
+            grid-template-columns: repeat(auto-fill, 225px)
+            gap: 13px
+            position: relative
+            right: 10px

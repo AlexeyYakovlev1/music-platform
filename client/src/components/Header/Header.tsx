@@ -1,11 +1,10 @@
 import { NavLink, useLocation } from "react-router-dom";
 import classes from "./Header.module.sass";
 import cn from "classnames";
-import AvatarIcon from "../../templates/images/avatar.jpg";
 import React from "react";
 import SearchContext from "../../context/search.context";
 import UserWindowContext from "../../context/UserWindow.context";
-import User from "../User/User";
+import User from "../UserComponent/UserComponent";
 import Button from "../UI/Button/Button";
 import { ReactComponent as SearchIcon } from "../../templates/svgs/search.svg";
 import { useSelector } from "react-redux";
@@ -17,9 +16,9 @@ export interface IMenu {
 
 const Header = (): JSX.Element => {
     const { visible, setVisible } = React.useContext(SearchContext);
-    const { setVisible: setUserVisible } = React.useContext(UserWindowContext);
+    const { setVisible: setUserVisible } = React.useContext(UserWindowContext); 
 
-    const isAuth = useSelector((state: any) => state.user.isAuth);
+    const { isAuth, info } = useSelector((state: any) => state.user);
 
     const location:any = useLocation();
     const menu: Array<IMenu> = [
@@ -86,12 +85,12 @@ const Header = (): JSX.Element => {
                     <React.Fragment>
                         <div className={classes.user} onClick={() => setUserVisible(true)}>
                             <img
-                                src={AvatarIcon}
+                                src={info.avatar}
                                 alt="user avatar"
                                 className={classes.userAvatar}
                             />
                         </div>
-                        <User name={"Алексей Яковлев"} />
+                        <User {...info} />
                     </React.Fragment>
                     :
                     <Button><NavLink to="/login">Войти</NavLink></Button>

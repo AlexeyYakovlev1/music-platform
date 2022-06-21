@@ -15,6 +15,7 @@ app.use("/auth", require("./routes/auth.routes"));
 app.use("/audio", require("./routes/audio.routes"));
 app.use("/filts", require("./routes/filts.routes"));
 app.use("/owner", require("./routes/owner.routes"));
+app.use("/user", require("./routes/user.routes"));
 
 const run = () => {
     app.listen(port, () => {
