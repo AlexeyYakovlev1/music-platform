@@ -9,6 +9,9 @@ import LoaderContext from "./context/loader.context";
 import ModalContext from "./context/modal.context";
 import { IInfo } from "./interfaces/alert.interfaces";
 import AlertContext from "./context/alert.context";
+import { checkAuth } from "./http/auth.http";
+import Cookies from "js-cookie";
+import { setUser } from "./redux/actions/user.actions";
 
 const App = (): JSX.Element => {
     const isAuth: boolean = false;
@@ -25,6 +28,14 @@ const App = (): JSX.Element => {
     React.useEffect(() => {
         setLoad(true);
         getPlaylists().then((response: any) => dispatch(setAllPlaylists(response.data.playlists)));
+        checkAuth().then((response: any) => {
+            if (!response.data.success) {
+                return dispatch(setUser(response.data.user, true));
+            }
+            
+            Cookies.set("token", response.data.token);
+            dispatch(setUser(response.data.user, false));
+        });
         setLoad(false);
         // eslint-disable-next-line
     }, []);

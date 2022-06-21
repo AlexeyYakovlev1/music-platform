@@ -1,3 +1,4 @@
+import Cookies from "js-cookie";
 import { IActionUser } from "src/interfaces/redux.interfaces";
 
 const initialState = {
@@ -17,6 +18,8 @@ export default function userReducer(state = initialState, action: IActionUser) {
     switch (action.type) {
         case SET_USER:
             if (action.logout) {
+                Cookies.remove("token");
+
                 return {
                     user: {
                         id: -1,

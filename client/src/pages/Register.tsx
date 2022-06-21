@@ -3,7 +3,6 @@ import Button from "../components/UI/Button/Button";
 import Input from "../components/UI/Input/Input";
 import classes from "./Pages.module.sass";
 import LogoIcon from "../templates/images/music-logo.png";
-import { IUser } from "src/interfaces/user.interface";
 import React from "react";
 import Alert from "src/components/UI/Alert/Alert";
 import AlertContext from "src/context/alert.context";
@@ -13,12 +12,10 @@ const { REACT_APP_API_URL } = process.env;
 const Register = (): JSX.Element => {
     document.title = "Регистрация";
 
-    const [user, setUser] = React.useState<IUser>({
-        id: -1,
+    const [user, setUser] = React.useState({
         name: "",
         email: "",
-        password: "",
-        avatar: ""
+        password: ""
     });
     const navigate = useNavigate();
     const { info, setInfo } = React.useContext(AlertContext);
