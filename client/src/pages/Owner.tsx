@@ -8,8 +8,8 @@ import { IPlaylist, ITrack } from "src/interfaces/audio.interfaces";
 import { IOwner } from "src/interfaces/user.interface";
 import classes from "./Pages.module.sass";
 import cn from "classnames";
-import OwnerTracks from "src/components/Owner/OwnerTracks";
-import OwnerPlaylists from "src/components/Owner/OwnerPlaylists";
+import Tracks from "src/components/TypesPage/Tracks";
+import Playlists from "src/components/TypesPage/Playlists";
 import ModalContext from "src/context/modal.context";
 import Modal from "src/components/UI/Modal/Modal";
 
@@ -152,8 +152,8 @@ const Owner = (): JSX.Element => {
                             </ul>
                         </nav>
                     </header>
-                    {type === "tracks" && <OwnerTracks playlist={currentPlaylist} tracks={tracks} />}
-                    {type === "playlists" && <OwnerPlaylists playlists={playlists} />}
+                    {type === "tracks" && <Tracks playlist={currentPlaylist} tracks={tracks} />}
+                    {type === "playlists" && <Playlists playlists={playlists} />}
                 </div>
             </div>
         </MainLayout>

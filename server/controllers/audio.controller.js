@@ -88,7 +88,7 @@ class AudioController {
 
                 if (owner.audios) audios = audios.concat(owner.audios);
 
-				const queryForUpdateOwner = `UPDATE owner set audios = $1 WHERE id = $2`;
+				const queryForUpdateOwner = `UPDATE owner SET audios = $1 WHERE id = $2`;
 					
 				await db.query(queryForUpdateOwner, [audios, ows[i]]);
 			}

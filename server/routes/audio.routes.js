@@ -3,8 +3,8 @@ const router = require("express").Router();
 const authMiddleware = require("../middleware/auth.middleware");
 
 // tracks
-router.post("/track/add", AudioController.trackAdd);
-router.delete("/track/remove/:id", AudioController.trackRemove);
+router.post("/track/add", authMiddleware, AudioController.trackAdd);
+router.delete("/track/remove/:id", authMiddleware, AudioController.trackRemove);
 router.get("/tracks", AudioController.trackGetAll);
 router.get("/track/:id", AudioController.trackGetOne);
 router.get("/track/file/:name", AudioController.getFileByName);
@@ -13,8 +13,8 @@ router.get("/track/file/:name", AudioController.getFileByName);
 router.get("/info/playlist/:id", AudioController.infoGetByPlaylist);
 
 // playlists
-router.post("/playlist/add", AudioController.playlistAdd);
-router.delete("/playlist/remove/:id", AudioController.playlistRemove);
+router.post("/playlist/add", authMiddleware, AudioController.playlistAdd);
+router.delete("/playlist/remove/:id", authMiddleware, AudioController.playlistRemove);
 router.get("/playlists", AudioController.playlistGetAll);
 router.get("/playlist/:id", AudioController.playlistGetOne);
 

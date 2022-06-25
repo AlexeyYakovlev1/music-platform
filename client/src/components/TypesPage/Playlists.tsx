@@ -2,11 +2,11 @@ import PlaylistComponent from "src/components/PlayListComponent/PlayListComponen
 import { IPlaylist } from "src/interfaces/audio.interfaces";
 import classes from "src/pages/Pages.module.sass";
 
-interface IOwnerPlaylistsProps {
+interface IPlaylistsProps {
     playlists: Array<IPlaylist>;
 }
 
-const OwnerPlaylists = ({ playlists }: IOwnerPlaylistsProps) => {
+const Playlists = ({ playlists }: IPlaylistsProps) => {
     return (
         <div>
             <h2 className={classes.ownerBodyTitle}>Плейлисты</h2>
@@ -22,4 +22,4 @@ const OwnerPlaylists = ({ playlists }: IOwnerPlaylistsProps) => {
     )
 }
 
-export default OwnerPlaylists
+export default Playlists;

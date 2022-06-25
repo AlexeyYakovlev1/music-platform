@@ -2,8 +2,6 @@ import React from 'react'
 import { useSelector } from "react-redux";
 import { NavLink, useLocation, useParams } from "react-router-dom";
 import MainLayout from "src/components/Layouts/MainLayout";
-import Playlists from "src/components/UserPage/Playlists";
-import Tracks from "src/components/UserPage/Tracks";
 import LoaderContext from "src/context/loader.context";
 import { getUser } from "src/http/user.http";
 import { IUser } from "src/interfaces/user.interface";
@@ -14,6 +12,9 @@ import { ReactComponent as SettingsIcon } from "src/templates/svgs/settings.svg"
 import useMounted from "src/hooks/useIsMounted";
 import ModalContext from "src/context/modal.context";
 import Modal from "src/components/UI/Modal/Modal";
+import Tracks from "src/components/TypesPage/Tracks";
+import Playlists from "src/components/TypesPage/Playlists";
+import { IPlaylist, ITrack } from "src/interfaces/audio.interfaces";
 
 const User = () => {
     const { id, type } = useParams();
@@ -29,7 +30,61 @@ const User = () => {
         avatar: ""
     });
     const [activeUser, setActiveUser] = React.useState<boolean>(userId === id);
-    
+    const [playlists, setPlaylists] = React.useState<Array<IPlaylist>>([{
+        name: "",
+        id: -1,
+        title: "",
+        owners: [
+            {
+                id: -1,
+                name: "",
+                audios: [],
+                filts: [],
+                avatar: "",
+                playlists: []
+            }
+        ],
+        audios: [
+            {
+                duration: "00:00",
+                filt: "",
+                title: "",
+                id: -1,
+                owners: [
+                    {
+                        id: -1,
+                        name: "",
+                        audios: [],
+                        filts: [],
+                        avatar: "",
+                        playlists: []
+                    }
+                ],
+                audio: "",
+                cover: ""
+            }
+        ],
+        cover: ""
+    }]);
+    const [tracks, setTracks] = React.useState<Array<ITrack>>([{
+                duration: "00:00",
+                filt: "",
+                title: "",
+                id: -1,
+                owners: [
+                    {
+                        id: -1,
+                        name: "",
+                        audios: [],
+                        filts: [],
+                        avatar: "",
+                        playlists: []
+                    }
+                ],
+                audio: "",
+                cover: ""
+    }]);
+
     const { setLoad } = React.useContext(LoaderContext);
     const { setVisible } = React.useContext(ModalContext);
     
@@ -44,11 +99,23 @@ const User = () => {
             url: `/user/${id}/tracks`
         }
     ];
+    const currentPlaylist: any = {
+        name: `${user.name}-all`,
+        id: 0,
+        title: `Все треки ${user.name}`,
+        owners: tracks.map((track: ITrack) => track.owners),
+        audios: tracks,
+        cover: "none"
+    };
 
     React.useEffect(() => {
         setLoad(true);
         if (id && isMounted) {
-            getUser(+id).then((response: any) => setUser(response.data.user));
+            getUser(+id).then((response: any) => {
+                setUser(response.data.user);
+                setPlaylists(response.data.user.playlists);
+                setTracks(response.data.user.tracks);
+            });
             setActiveUser(+userId === +id);
         }
         setLoad(false);
@@ -105,8 +172,8 @@ const User = () => {
                             </ul>
                         </nav>    
                     </header>
-                    {type === "tracks" && <Tracks />}
-                    {type === "playlists" && <Playlists />}
+                    {type === "tracks" && <Tracks playlist={currentPlaylist} tracks={tracks} />}
+                    {type === "playlists" && <Playlists playlists={playlists} />}
                 </div>
             </div>
         </MainLayout>

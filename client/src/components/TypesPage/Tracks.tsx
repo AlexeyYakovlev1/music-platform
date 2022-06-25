@@ -3,12 +3,12 @@ import Track from "src/components/Track/Track";
 import { IPlaylist, ITrack } from "src/interfaces/audio.interfaces";
 import classes from "src/pages/Pages.module.sass";
 
-interface IOwnerTracksProps {
+interface ITracksProps {
     tracks: Array<ITrack>;
     playlist: IPlaylist;
 }
 
-const OwnerTracks = ({ tracks, playlist }: IOwnerTracksProps) => {
+const Tracks = ({ tracks, playlist }: ITracksProps) => {
     const { currentTrack } = useSelector((state: any) => state.audio);
     
     return (
@@ -29,4 +29,4 @@ const OwnerTracks = ({ tracks, playlist }: IOwnerTracksProps) => {
     )
 }
 
-export default OwnerTracks
+export default Tracks;
