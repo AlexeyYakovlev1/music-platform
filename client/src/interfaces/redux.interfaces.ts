@@ -12,6 +12,13 @@ export interface IActionPlaylist extends IDefAction { payload: IPlaylist };
 export interface IActionAllPlaylists extends IDefAction { payload: IPlaylist[] };
 export interface IActionIdx extends IDefAction { payload: number };
 export interface IActionPlay extends IDefAction { payload: boolean };
+
+export interface IActionFollowAudio extends IDefAction {
+    payload: boolean;
+    track: boolean;
+    idAudio: number;
+};
+
 export interface IActionUser extends IDefAction {
     payload: IUser;
     logout: boolean;

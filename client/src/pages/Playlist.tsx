@@ -24,6 +24,7 @@ const Playlist = (): JSX.Element => {
 
     const [activePlaylist, setActivePlaylist] = React.useState<boolean>(currentPlaylist.id === id);
     const [playlist, setPlaylist] = React.useState<IPlaylist>({
+        follow: false,
         name: "",
         id: -1,
         title: "",
@@ -39,6 +40,7 @@ const Playlist = (): JSX.Element => {
         ],
         audios: [
             {
+                follow: false,
                 duration: "00:00",
                 filt: "",
                 title: "",

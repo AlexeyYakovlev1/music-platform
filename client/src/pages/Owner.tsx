@@ -23,6 +23,7 @@ const Owner = (): JSX.Element => {
         playlists: []
     });
     const [playlists, setPlaylists] = React.useState<Array<IPlaylist>>([{
+        follow: false,
         name: "",
         id: -1,
         title: "",
@@ -38,6 +39,7 @@ const Owner = (): JSX.Element => {
         ],
         audios: [
             {
+                follow: false,
                 duration: "00:00",
                 filt: "",
                 title: "",
@@ -59,6 +61,7 @@ const Owner = (): JSX.Element => {
         cover: ""
     }]);
     const [tracks, setTracks] = React.useState<Array<ITrack>>([{
+                follow: false,
                 duration: "00:00",
                 filt: "",
                 title: "",
@@ -77,6 +80,7 @@ const Owner = (): JSX.Element => {
                 cover: ""
     }]);
     const currentPlaylist: IPlaylist = {
+        follow: false,
         name: `${owner.name}-all`,
         id: 0,
         title: `Все треки ${owner.name}`,

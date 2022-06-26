@@ -11,6 +11,7 @@ interface IInitialState {
 
 const initialState: IInitialState = {
     currentTrack: {
+        follow: false,
         duration: "00:00",
         filt: "",
         title: "",
@@ -29,6 +30,7 @@ const initialState: IInitialState = {
         cover: ""
     },
     currentPlaylist: {
+        follow: false,
         name: "",
         id: -1,
         title: "",
@@ -44,6 +46,7 @@ const initialState: IInitialState = {
         ],
         audios: [
             {
+                follow: false,
                 duration: "00:00",
                 filt: "",
                 title: "",
@@ -66,6 +69,7 @@ const initialState: IInitialState = {
     },
     idxTrack: 0,
     playlists: [{
+        follow: false,
         name: "",
         id: -1,
         title: "",
@@ -81,6 +85,7 @@ const initialState: IInitialState = {
         ],
         audios: [
             {
+                follow: false,
                 duration: "00:00",
                 filt: "",
                 title: "",
@@ -111,9 +116,30 @@ const SET_CURRENT_PLAYLIST = "SET_CURRENT_PLAYLIST";
 const SET_IDX_TRACK = "SET_IDX_TRACK";
 const SET_ALL_PLAYLISTS = "SET_ALL_PLAYLISTS";
 const SET_AUDIO_PLAY = "SET_AUDIO_PLAY";
+const SET_FOLLOW_AUDIO = "SET_FOLLOW_AUDIO";
 
 function audioReducer(state = initialState, action: TAction) {
     switch (action.type) {
+        case SET_FOLLOW_AUDIO:
+            const followAction: any = action;
+
+            if (followAction.track) {
+                let allTracks: any = [];
+
+                for (let i = 0; i < state.playlists.length; i++) {
+                    const playlist = state.playlists[i];
+
+                    allTracks = allTracks.concat(playlist.audios);
+                }
+
+                const currentTrack = allTracks.filter((track: ITrack) => {
+                    return track.id === followAction.idAudio;
+                });
+
+                currentTrack.follow = followAction.follow;
+            }
+
+            return { ...state };
         case SET_CURRENT_TRACK:
             const obj = { ...state, currentTrack: action.payload };
             const currentAction: any = action;

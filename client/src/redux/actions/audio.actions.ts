@@ -1,5 +1,5 @@
 import { IPlaylist, ITrack } from "../../interfaces/audio.interfaces";
-import { IActionAudio, IActionPlaylist, IActionAllPlaylists, IActionIdx, IActionPlay } from "../../interfaces/redux.interfaces";
+import { IActionAudio, IActionPlaylist, IActionAllPlaylists, IActionIdx, IActionPlay, IActionFollowAudio } from "../../interfaces/redux.interfaces";
 
 export const setAllPlaylists = (playlists: IPlaylist[]): IActionAllPlaylists => {
     return {
@@ -34,5 +34,14 @@ export const setAudioPlay = (play: boolean): IActionPlay => {
     return {
         type: "SET_AUDIO_PLAY",
         payload: play
+    }
+}
+
+export const setFollowAudio = (follow: boolean, track: boolean, idAudio: number): IActionFollowAudio => {
+    return {
+        type: "SET_FOLLOW_AUDIO",
+        payload: follow,
+        track,
+        idAudio
     }
 }

@@ -147,6 +147,35 @@ class AudioController {
 		}
 	};
 
+    // follow track
+    async followTrack(req, res) {
+        try {
+            const { params, user, query } = req;
+            const { id } = params;
+            const queryForFindPerson = `SELECT * FROM person WHERE id = $1`;
+            const findPerson = await db.query(queryForFindPerson, [user.id]);
+
+            if (!findPerson.rows[0]) {
+                return new Message(400, { success: false }).log(res, `Пользователя по идентификатору ${user.id} не существует`);
+            }
+
+            const queryForFindTrack = `SELECT * FROM track WHERE id = $1`;
+            const findTrack = await db.query(queryForFindTrack, [id]);
+            const track = findTrack.rows[0];
+
+            if (!track) {
+                return new Message(400, { success: false }).log(res, `Трека по идентификатору ${id} не существует`);
+            }
+
+            const queryForUpdateTrack = `UPDATE track SET follow = $1 WHERE id = $2`;
+            await db.query(queryForUpdateTrack, [query.follow, id]);
+
+            return new Message(200, { success: true }).log(res);
+        } catch(e) {
+            return new Message(500, { success: false }).log(res, `Ошибка сервера: ${e.message}`);
+        }
+    };
+
 	// get all tracks
 	async trackGetAll(req, res) {
 		try {
@@ -225,6 +254,35 @@ class AudioController {
 			return new Message(500, { success: false }).log(res, `Ошибка сервера: ${e.message}`);	
 		}
 	};
+
+    // follow playlist
+    async followPlaylist(req, res) {
+        try {
+            const { params, user, query } = req;
+            const { id } = params;
+            const queryForFindPerson = `SELECT * FROM person WHERE id = $1`;
+            const findPerson = await db.query(queryForFindPerson, [user.id]);
+
+            if (!findPerson.rows[0]) {
+                return new Message(400, { success: false }).log(res, `Пользователя по идентификатору ${user.id} не существует`);
+            }
+
+            const queryForFindPlaylist = `SELECT * FROM playlist WHERE id = $1`;
+            const findPlaylist = await db.query(queryForFindPlaylist, [id]);
+            const playlist = findPlaylist.rows[0];
+
+            if (!playlist) {
+                return new Message(400, { success: false }).log(res, `Плейлиста по идентификатору ${id} не существует`);
+            }
+
+            const queryForUpdatePlaylist = `UPDATE playlist SET follow = $1 WHERE id = $2`;
+            await db.query(queryForUpdatePlaylist, [query.follow, id]);
+
+            return new Message(200, { success: true }).log(res);
+        } catch(e) {
+            return new Message(500, { success: false }).log(res, `Ошибка сервера: ${e.message}`);
+        }
+    };
 
 	// remove playlist by id
 	async playlistRemove(req, res) {

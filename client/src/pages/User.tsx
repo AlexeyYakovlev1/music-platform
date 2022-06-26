@@ -32,6 +32,7 @@ const User = () => {
     const [activeUser, setActiveUser] = React.useState<boolean>(userId === id);
     const [playlists, setPlaylists] = React.useState<Array<IPlaylist>>([{
         name: "",
+        follow: false,
         id: -1,
         title: "",
         owners: [
@@ -46,6 +47,7 @@ const User = () => {
         ],
         audios: [
             {
+                follow: false,
                 duration: "00:00",
                 filt: "",
                 title: "",
@@ -67,6 +69,7 @@ const User = () => {
         cover: ""
     }]);
     const [tracks, setTracks] = React.useState<Array<ITrack>>([{
+                follow: false,
                 duration: "00:00",
                 filt: "",
                 title: "",

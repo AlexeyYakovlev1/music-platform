@@ -8,6 +8,7 @@ export interface ITrack {
     cover: string;
     title: string;
     duration: string;
+    follow: boolean;
 }
 
 export interface IPlaylist {
@@ -17,6 +18,7 @@ export interface IPlaylist {
     cover: string;
     owners: Array<IOwner>;
     name: string;
+    follow: boolean;
 }
 
 export interface IFilt {

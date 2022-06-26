@@ -22,9 +22,10 @@ export interface IPlayListProps {
     cover: string;
     owners: Array<number | IOwner>;
     name: string;
+    follow: boolean;
 }
 
-const PlaylistComponent = ({ id, title, cover, owners, name }: IPlayListProps): JSX.Element => {
+const PlaylistComponent = ({ id, title, cover, owners, name, follow }: IPlayListProps): JSX.Element => {
     const { currentPlaylist, audioPlay } = useSelector((state: any) => state.audio);
     const dispatch = useDispatch();
 
@@ -33,6 +34,7 @@ const PlaylistComponent = ({ id, title, cover, owners, name }: IPlayListProps): 
     const [hover, setHover] = React.useState<boolean>(false);
     const [activePlaylist, setActivePlaylist] = React.useState<boolean>(currentPlaylist.id === id);
     const [tracks, setTracks] = React.useState<Array<ITrack>>([{
+        follow: false,
         duration: "00:00",
         filt: "",
         title: "",
@@ -75,7 +77,7 @@ const PlaylistComponent = ({ id, title, cover, owners, name }: IPlayListProps): 
 
     const playHandler = async() => {
         dispatch(setCurrentTrack(tracks[0], false));
-        dispatch(setCurrentPlaylist({ id, cover, title, owners: singers, audios: tracks, name }));
+        dispatch(setCurrentPlaylist({ id, cover, title, owners: singers, audios: tracks, name, follow }));
     }
 
     return (
