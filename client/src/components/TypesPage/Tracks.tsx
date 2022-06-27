@@ -15,7 +15,7 @@ const Tracks = ({ tracks, playlist }: ITracksProps) => {
         <div>
             <h2 className={classes.ownerBodyTitle}>Треки</h2>
                 <ul className={classes.ownerBodyTracksList}>
-                {tracks.map((audio, index) => (
+                {tracks.map((audio: ITrack, index) => (
                     <Track
                         key={audio.id}
                         index={index}

@@ -44,6 +44,7 @@ const Login = (): JSX.Element => {
         Cookies.set("token", data.token);
 
         navigate("/");
+        document.title = "Платформа Музыка - собираем музыку и подкасты для вас";
     }
 
     return (
