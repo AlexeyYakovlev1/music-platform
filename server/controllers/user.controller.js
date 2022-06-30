@@ -56,7 +56,7 @@ class UserController {
             }
 
             const { tracks } = body;
-
+            
             for (let i = 0; i < tracks.length; i++) {
                 const trackId = tracks[i];
                 const queryForFindTrack = `SELECT * FROM track WHERE id = $1`;

@@ -1,0 +1,33 @@
+@import "../../../styles/_vars"
+
+.search
+    max-width: 360px
+    position: relative
+    &Button
+        position: absolute
+        top: 0
+        left: 0
+        width: 35px
+        height: 35px
+        background-color: transparent
+        border: none
+        cursor: pointer
+        & svg
+            fill: $grayDark
+            width: 18px !important
+            height: 18px !important
+            &:hover
+                fill: $black
+    &Input
+        padding: 6px 7px 6px 38px
+        box-shadow: $shadowBold
+        border: 1px solid $gray
+        font-size: 14px
+        width: 360px
+        border-radius: 5px
+        align-items: center
+        &::placeholder
+            font-family: $fontYandex
+            font-weight: 500
+        &Hide
+            display: none

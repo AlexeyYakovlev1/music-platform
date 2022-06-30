@@ -2,12 +2,11 @@ import { NavLink, useLocation } from "react-router-dom";
 import classes from "./Header.module.sass";
 import cn from "classnames";
 import React from "react";
-import SearchContext from "../../context/search.context";
 import UserWindowContext from "../../context/UserWindow.context";
 import User from "../UserComponent/UserComponent";
 import Button from "../UI/Button/Button";
-import { ReactComponent as SearchIcon } from "../../templates/svgs/search.svg";
 import { useSelector } from "react-redux";
+import Search from "./Search/Search";
 
 export interface IMenu {
     name: string;
@@ -15,7 +14,6 @@ export interface IMenu {
 }
 
 const Header = (): JSX.Element => {
-    const { visible, setVisible } = React.useContext(SearchContext);
     const { setVisible: setUserVisible } = React.useContext(UserWindowContext); 
 
     const { isAuth, info } = useSelector((state: any) => state.user);
@@ -61,22 +59,8 @@ const Header = (): JSX.Element => {
                             ))}
                         </ul>
                     </nav>
-                    <div className={classes.search} onClick={(event) => event.stopPropagation()}>
-                        <button
-                            className={classes.searchButton}
-                            onClick={() => setVisible(true)}
-                        >
-                            <SearchIcon />
-                        </button>
-                        <form className={classes.searchForm}>
-                            <input
-                                className={cn(classes.searchInput, {
-                                    [classes.searchInputHide]: !visible
-                                })}
-                                type="text"
-                                placeholder="Трек, альбом, исполнитель, подкаст"
-                            />
-                        </form>
+                    <div className={classes.desktopSearch}>
+                        <Search />
                     </div>
                 </div>
             </div>
@@ -93,8 +77,13 @@ const Header = (): JSX.Element => {
                         <User {...info} />
                     </React.Fragment>
                     :
-                    <Button><NavLink to="/login">Войти</NavLink></Button>
+                    <Button className={classes.rightUserLogin}>
+                        <NavLink to="/login">Войти</NavLink>
+                    </Button>
                 }
+                <div className={classes.mobileSearch}>
+                    <Search />
+                </div>
             </div>
         </header>
     );

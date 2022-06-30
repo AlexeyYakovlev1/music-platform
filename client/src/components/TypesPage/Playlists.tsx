@@ -11,12 +11,17 @@ const Playlists = ({ playlists }: IPlaylistsProps) => {
         <div>
             <h2 className={classes.ownerBodyTitle}>Плейлисты</h2>
             <ul className={classes.ownerBodyPlaylistsList}>
-                {playlists.map((playlist: IPlaylist) => (
+                {playlists.length ? playlists.map((playlist: IPlaylist) => (
                     <PlaylistComponent
                         key={playlist.id}
                         {...playlist}
                     />
-                ))}
+                )) : <h3
+                        style={{fontSize: "18px", paddingLeft: "10px"}}
+                        className={classes.ownerBodyTitle}
+                    >
+                        Ничего нет
+                    </h3>}
             </ul>
         </div>
     )
