@@ -167,18 +167,15 @@ class AudioController {
                 return new Message(400, { success: false }).log(res, `Трека по идентификатору ${id} не существует`);
             }
 
-            const queryForUpdateTrack = `UPDATE track SET follow = $1 WHERE id = $2 RETURNING *`;
-            const updateTrack = await db.query(queryForUpdateTrack, [query.follow, id]);
-
-            if (!!query.follow) {
-                const queryForUpdateAppPerson = `UPDATE person SET tracks = array_append(tracks, $1) WHERE id = $2`;
-                await db.query(queryForUpdateAppPerson, [+id, user.id]);
-            } else {
-                const queryForUpdateRemPerson = `UPDATE person SET tracks = array_remove(tracks, $1) WHERE id = $2`;
-                await db.query(queryForUpdateRemPerson, [+id, user.id]);
+            if (query.follow === "true") {   
+                const queryForUpdateAppFollow = `UPDATE follow SET tracks = array_append(tracks, $1) WHERE person_id = $2`;
+                await db.query(queryForUpdateAppFollow, [+id, user.id]);
+            } else if (query.follow === "false") {
+                const queryForUpdateRemFollow = `UPDATE follow SET tracks = array_remove(tracks, $1) WHERE person_id = $2`;
+                await db.query(queryForUpdateRemFollow, [+id, user.id]);
             }
 
-            return new Message(200, { success: true, track: updateTrack.rows[0] }).log(res);
+            return new Message(200, { success: true }).log(res);
         } catch(e) {
             return new Message(500, { success: false }).log(res, `Ошибка сервера: ${e.message}`);
         }

@@ -8,6 +8,7 @@ import { setAudioPlay, setCurrentTrack, setIdxTrack } from "../../redux/actions/
 import Player from "../../services/Player";
 import useMounted from "../../hooks/useIsMounted";
 import { getOwnersByTrack } from "../../http/owners.http";
+import LoaderContext from "src/context/loader.context";
 
 // templates
 import { ReactComponent as MutedIcon } from "../../templates/svgs/muted.svg";
@@ -19,7 +20,6 @@ import { ReactComponent as PreviousIcon } from "../../templates/svgs/prev.svg";
 import { ReactComponent as LikeIcon } from "../../templates/svgs/like.svg";
 import { ReactComponent as PlusIcon } from "../../templates/svgs/plus.svg";
 import { ReactComponent as ShareIcon } from "../../templates/svgs/share.svg";
-import LoaderContext from "src/context/loader.context";
 
 const PlayerComponent = (): JSX.Element => {
     const volumeRef = React.useRef<HTMLInputElement>(null);
@@ -27,7 +27,7 @@ const PlayerComponent = (): JSX.Element => {
     const wrapperLineRef = React.useRef<HTMLDivElement>(null);
     const audioRef = React.useRef<HTMLAudioElement>(null);
 
-    const { currentTrack, audioPlay, idxTrack, currentPlaylist }: any = useSelector((state: any) => state.audio);
+    const { currentTrack, audioPlay, idxTrack, currentPlaylist, follow: { tracks } }: any = useSelector((state: any) => state.audio);
     const dispatch: any = useDispatch();
 
     const [visibleTime, setVisibleTime] = React.useState(false);
@@ -49,6 +49,7 @@ const PlayerComponent = (): JSX.Element => {
         avatar: "",
         playlists: []
     }]);
+    // const [follow, setFollow] = React.useState<boolean>(tracks);
 
     React.useEffect(() => {
         setLoad(true);
@@ -107,7 +108,6 @@ const PlayerComponent = (): JSX.Element => {
             copyIdx--;
             if (copyIdx < 0) copyIdx = currentPlaylist.audios.length - 1;
         } else {
-
             copyIdx++;
             if (copyIdx > currentPlaylist.audios.length - 1) copyIdx = 0;
         }

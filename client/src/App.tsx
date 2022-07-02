@@ -3,7 +3,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import React from "react";
 import SearchContext from "./context/search.context";
 import UserWindowContext from "./context/UserWindow.context";import { useDispatch } from "react-redux";
-import { setAllPlaylists } from "./redux/actions/audio.actions";
+import { setAllFollow, setAllPlaylists, setFollowAudio } from "./redux/actions/audio.actions";
 import { getPlaylists } from "./http/playlists.http";
 import LoaderContext from "./context/loader.context";
 import ModalContext from "./context/modal.context";
@@ -12,6 +12,7 @@ import AlertContext from "./context/alert.context";
 import { checkAuth } from "./http/auth.http";
 import Cookies from "js-cookie";
 import { setUser } from "./redux/actions/user.actions";
+import { getFollow } from "./http/follow.http";
 
 const App = (): JSX.Element => {
     const isAuth: boolean = false;
@@ -35,6 +36,9 @@ const App = (): JSX.Element => {
             
             Cookies.set("token", response.data.token);
             dispatch(setUser(response.data.user, false));
+            getFollow(response.data.user.id).then((obj: any) => {
+                dispatch(setAllFollow(obj.data.follow.tracks, obj.data.follow.playlists));
+            });
         });
         setLoad(false);
         // eslint-disable-next-line

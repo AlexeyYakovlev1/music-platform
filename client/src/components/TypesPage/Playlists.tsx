@@ -11,7 +11,7 @@ const Playlists = ({ playlists }: IPlaylistsProps) => {
         <div>
             <h2 className={classes.ownerBodyTitle}>Плейлисты</h2>
             <ul className={classes.ownerBodyPlaylistsList}>
-                {playlists.length ? playlists.map((playlist: IPlaylist) => (
+                {(playlists && playlists.length) ? playlists.map((playlist: IPlaylist) => (
                     <PlaylistComponent
                         key={playlist.id}
                         {...playlist}

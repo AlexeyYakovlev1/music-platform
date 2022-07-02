@@ -15,9 +15,12 @@ class AuthController {
             }
 
             const hashPassword = bcrypt.hashSync(password, 5);
-            const queryForCreate = `INSERT INTO person(name, email, password) VALUES($1,$2,$3)`;
+            const queryForCreatePerson = `INSERT INTO person(name, email, password) VALUES($1,$2,$3) RETURNING *`;
+            const queryForCreateFollow = `INSERT INTO follow(person_id) VALUES($1)`;
+
+            const newPerson = await db.query(queryForCreatePerson, [name, email, hashPassword]);
+            await db.query(queryForCreateFollow, [newPerson.rows[0].id]);
             
-            await db.query(queryForCreate, [name, email, hashPassword]);
             res.status(201).json({ success: true });
         } catch(e) {
             new Message(500, { success: false }).log(res, `Ошибка сервера: ${e.message}`);

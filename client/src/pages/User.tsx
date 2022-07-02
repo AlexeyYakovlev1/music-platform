@@ -3,8 +3,6 @@ import { useSelector } from "react-redux";
 import { NavLink, useLocation, useParams } from "react-router-dom";
 import MainLayout from "src/components/Layouts/MainLayout";
 import LoaderContext from "src/context/loader.context";
-import { getUser } from "src/http/user.http";
-import { IUser } from "src/interfaces/user.interface";
 import classes from "./Pages.module.sass";
 import cn from "classnames";
 import Button from "src/components/UI/Button/Button";
@@ -14,79 +12,16 @@ import ModalContext from "src/context/modal.context";
 import Modal from "src/components/UI/Modal/Modal";
 import Tracks from "src/components/TypesPage/Tracks";
 import Playlists from "src/components/TypesPage/Playlists";
-import { IPlaylist, ITrack } from "src/interfaces/audio.interfaces";
+import { ITrack } from "src/interfaces/audio.interfaces";
 
 const User = () => {
     const { id, type } = useParams();
     const { pathname } = useLocation();
     
-    const { id: userId } = useSelector((state: any) => state.user.info);
+    const user = useSelector((state: any) => state.user.info);
+    const { tracks, playlists } = useSelector((state: any) => state.audio.follow);
 
-    const [user, setUser] = React.useState<IUser>({
-        id: -1,
-        name: "",
-        email: "",
-        password: "",
-        avatar: ""
-    });
-    const [activeUser, setActiveUser] = React.useState<boolean>(userId === id);
-    const [playlists, setPlaylists] = React.useState<Array<IPlaylist>>([{
-        name: "",
-        follow: false,
-        id: -1,
-        title: "",
-        owners: [
-            {
-                id: -1,
-                name: "",
-                audios: [],
-                filts: [],
-                avatar: "",
-                playlists: []
-            }
-        ],
-        audios: [
-            {
-                follow: false,
-                duration: "00:00",
-                filt: "",
-                title: "",
-                id: -1,
-                owners: [
-                    {
-                        id: -1,
-                        name: "",
-                        audios: [],
-                        filts: [],
-                        avatar: "",
-                        playlists: []
-                    }
-                ],
-                audio: "",
-                cover: ""
-            }
-        ],
-        cover: ""
-    }]);
-    const [tracks, setTracks] = React.useState<Array<ITrack>>([{
-                follow: false,
-                duration: "00:00",
-                filt: "",
-                title: "",
-                id: -1,
-                owners: [
-                    {
-                        id: -1,
-                        name: "",
-                        audios: [],
-                        filts: [],
-                        avatar: "",
-                        playlists: []
-                    }
-                ],
-                audio: "",
-                cover: ""
-    }]);
+    const [activeUser, setActiveUser] = React.useState<boolean>(user.id === id);
 
     const { setLoad } = React.useContext(LoaderContext);
     const { setVisible } = React.useContext(ModalContext);
@@ -106,25 +41,18 @@ const User = () => {
         name: `${user.name}-all`,
         id: 0,
         title: `Все треки ${user.name}`,
-        owners: tracks.map((track: ITrack) => track.owners),
+        owners: tracks && tracks.map((track: ITrack) => track.owners),
         audios: tracks,
         cover: "none"
     };
 
     React.useEffect(() => {
         setLoad(true);
-        if (id && isMounted) {
-            getUser(+id).then((response: any) => {
-                setUser(response.data.user);
-                setPlaylists(response.data.user.playlists);
-                setTracks(response.data.user.tracks);
-            });
-            setActiveUser(+userId === +id);
-        }
+        if (id && isMounted) setActiveUser(+user.id === +id);
         setLoad(false);
 
         // eslint-disable-next-line
-    }, [isMounted, userId, id]);
+    }, [isMounted, user.id, id]);
 
     return (
         <MainLayout>

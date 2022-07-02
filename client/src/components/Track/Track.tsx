@@ -23,7 +23,6 @@ const { REACT_APP_API_URL } = process.env;
 const Track = ({ track, index, activeTrack, playlist }: ITrackProps): JSX.Element => {
     const { audioPlay } = useSelector((state: any) => state.audio);
     const dispatch = useDispatch();
-
     const { setInfo } = React.useContext(AlertContext);
 
     const [hover, setHover] = React.useState<boolean>(false);

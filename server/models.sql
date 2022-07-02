@@ -3,10 +3,7 @@ CREATE TABLE person(
     avatar VARCHAR(255) NOT NULL DEFAULT 'https://t4.ftcdn.net/jpg/04/10/43/77/360_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg',
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    tracks INTEGER ARRAY,
-    playlists INTEGER ARRAY,
-    owners INTEGER ARRAY
+    password VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE track(
@@ -16,8 +13,7 @@ CREATE TABLE track(
     audio VARCHAR(255) NOT NULL,
     cover VARCHAR(255) NOT NULL DEFAULT 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiC3Ba9xwS9m8DfRYSyhygOjmq1KHOExvj9yNkSidc7eSPnfj0y5yEvHkujqWmZceI15Y&usqp=CAU',
     title VARCHAR(255) NOT NULL,
-    duration VARCHAR(255) NOT NULL DEFAULT '0:00',
-    follow BOOLEAN DEFAULT false
+    duration VARCHAR(255) NOT NULL DEFAULT '0:00'
 );
 
 CREATE TABLE playlist(
@@ -41,4 +37,12 @@ CREATE TABLE owner(
 CREATE TABLE filt(
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL UNIQUE
+);
+
+CREATE TABLE follow(
+    id SERIAL PRIMARY KEY,
+    person_id INTEGER,
+    FOREIGN KEY (person_id) REFERENCES person (id),
+    tracks INTEGER ARRAY,
+    playlists INTEGER ARRAY
 );

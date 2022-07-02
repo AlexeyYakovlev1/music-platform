@@ -183,9 +183,21 @@ const SET_IDX_TRACK = "SET_IDX_TRACK";
 const SET_ALL_PLAYLISTS = "SET_ALL_PLAYLISTS";
 const SET_AUDIO_PLAY = "SET_AUDIO_PLAY";
 const SET_FOLLOW_AUDIO = "SET_FOLLOW_AUDIO";
+const SET_ALL_FOLLOW = "SET_ALL_FOLLOW";
 
 function audioReducer(state = initialState, action: TAction) {
     switch (action.type) {
+        case SET_ALL_FOLLOW:
+            const follAction: any = action;
+
+            return {
+                ...state,
+                follow: {
+                    ...state.follow,
+                    tracks: follAction.tracks,
+                    playlists: follAction.playlists
+                }
+            };
         case SET_FOLLOW_AUDIO:
             const followAction: any = action;
 
@@ -201,7 +213,6 @@ function audioReducer(state = initialState, action: TAction) {
                 // track unfollow
                 if (!followAction.payload) {
                     state.follow.tracks.splice(idxFindTrack, 1);
-
                     return { ...state };
                 }
 
