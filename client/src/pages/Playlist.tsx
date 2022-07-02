@@ -10,16 +10,20 @@ import { ReactComponent as LikeIcon } from "../templates/svgs/like.svg";
 import cn from "classnames";
 import Track from "../components/Track/Track";
 import { useDispatch, useSelector } from "react-redux";
-import { setAudioPlay, setCurrentPlaylist } from "../redux/actions/audio.actions";
+import { setAudioPlay, setCurrentPlaylist, setFollowAudio } from "../redux/actions/audio.actions";
 import { getInfo } from "src/http/playlists.http";
 import useMounted from "src/hooks/useIsMounted";
 import LoaderContext from "src/context/loader.context";
 import ModalContext from "src/context/modal.context";
 import Modal from "src/components/UI/Modal/Modal";
+import Cookies from "js-cookie";
+import AlertContext from "src/context/alert.context";
+
+const { REACT_APP_API_URL } = process.env;
 
 const Playlist = (): JSX.Element => {
-    const { id } = useParams();
-    const { currentTrack, currentPlaylist, audioPlay } = useSelector((state: any) => state.audio);
+    const { id }: any = useParams();
+    const { currentTrack, currentPlaylist, audioPlay, follow: { playlists } } = useSelector((state: any) => state.audio);
     const dispatch = useDispatch();
 
     const [activePlaylist, setActivePlaylist] = React.useState<boolean>(currentPlaylist.id === id);
@@ -62,16 +66,15 @@ const Playlist = (): JSX.Element => {
         cover: ""
     });
     const [playShow, setPlayShow] = React.useState<boolean>(true);
+    const [follow, setFollow] = React.useState<boolean>(!!playlists.filter((item: any) => +item.id === +id));
+
     const isMounted = useMounted();
     const { setLoad } = React.useContext(LoaderContext);
     const { setVisible } = React.useContext(ModalContext);
-
-    if (!playlist.id) {
-        setLoad(true);
-    }
+    const { setInfo } = React.useContext(AlertContext);
 
     React.useEffect(() => {
-        !id && setLoad(true);
+        (!playlist.id && !id) && setLoad(true);
         
         if (id && isMounted) {
             getInfo(+id).then((response: any) => {
@@ -87,6 +90,7 @@ const Playlist = (): JSX.Element => {
                 }
             });
 
+            setFollow(!!playlists.filter((item: any) => +item.id === +id));
             setActivePlaylist(currentPlaylist.id === +id);
             setLoad(false);
         }
@@ -101,6 +105,23 @@ const Playlist = (): JSX.Element => {
         } else {
             dispatch(setAudioPlay(!audioPlay));
         }
+    }
+
+    const followHandler = async () => {
+        const response = await fetch(`${REACT_APP_API_URL}/audio/playlist/follow/${playlist.id}?follow=${!follow}`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${Cookies.get("token")}`
+            }
+        });
+        const data = await response.json();
+        
+        if (!data.success) {
+            return setInfo({ text: data.message, type: "ERROR" });
+        }
+
+        dispatch(setFollowAudio(!follow, false, playlist.id));
+        setFollow(!follow);
     }
 
     return (
@@ -140,8 +161,11 @@ const Playlist = (): JSX.Element => {
                                 <span>Слушать</span>
                             </Button>
                             <Button
+                                onClick={followHandler}
                                 background="WHITE"
-                                className={cn(classes.playlistLike, classes.playlistActionsButton)}
+                                className={cn(classes.playlistLike, classes.playlistActionsButton, {
+                                    [classes.playlistLikeActionsButtonActive]: follow
+                                })}
                             >
                                 <LikeIcon />
                             </Button>

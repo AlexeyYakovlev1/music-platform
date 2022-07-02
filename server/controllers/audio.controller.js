@@ -280,8 +280,13 @@ class AudioController {
                 return new Message(400, { success: false }).log(res, `Плейлиста по идентификатору ${id} не существует`);
             }
 
-            const queryForUpdatePlaylist = `UPDATE playlist SET follow = $1 WHERE id = $2`;
-            await db.query(queryForUpdatePlaylist, [query.follow, id]);
+            if (query.follow === "true") {
+                const queryForUpdateFollow = `UPDATE follow SET playlists = array_append(playlists, $1) WHERE person_id = $2`;
+                await db.query(queryForUpdateFollow, [id, findPerson.rows[0].id]);
+            } else if (query.follow === "false") {
+                const queryForUpdateFollow = `UPDATE follow SET playlists = array_remove(playlists, $1) WHERE person_id = $2`;
+                await db.query(queryForUpdateFollow, [id, findPerson.rows[0].id]);
+            }
 
             return new Message(200, { success: true }).log(res);
         } catch(e) {

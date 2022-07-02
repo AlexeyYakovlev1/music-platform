@@ -4,7 +4,7 @@ import React from "react";
 import cn from "classnames";
 import { IOwner } from "../../interfaces/user.interface";
 import { useDispatch, useSelector } from "react-redux";
-import { setAudioPlay, setCurrentTrack, setIdxTrack } from "../../redux/actions/audio.actions";
+import { setAudioPlay, setCurrentTrack, setFollowAudio, setIdxTrack } from "../../redux/actions/audio.actions";
 import Player from "../../services/Player";
 import useMounted from "../../hooks/useIsMounted";
 import { getOwnersByTrack } from "../../http/owners.http";
@@ -20,6 +20,10 @@ import { ReactComponent as PreviousIcon } from "../../templates/svgs/prev.svg";
 import { ReactComponent as LikeIcon } from "../../templates/svgs/like.svg";
 import { ReactComponent as PlusIcon } from "../../templates/svgs/plus.svg";
 import { ReactComponent as ShareIcon } from "../../templates/svgs/share.svg";
+import Cookies from "js-cookie";
+import AlertContext from "src/context/alert.context";
+
+const { REACT_APP_API_URL } = process.env;
 
 const PlayerComponent = (): JSX.Element => {
     const volumeRef = React.useRef<HTMLInputElement>(null);
@@ -40,6 +44,7 @@ const PlayerComponent = (): JSX.Element => {
     const timeTrack = player.getTime();
     const isMounted = useMounted();
     const { setLoad } = React.useContext(LoaderContext);
+    const { setInfo } = React.useContext(AlertContext);
 
     const [singers, setSingers] = React.useState<Array<IOwner>>([{
         id: -1,
@@ -49,11 +54,15 @@ const PlayerComponent = (): JSX.Element => {
         avatar: "",
         playlists: []
     }]);
-    // const [follow, setFollow] = React.useState<boolean>(tracks);
+    const [follow, setFollow] = React.useState<boolean>(!!tracks.filter((item: any) => +item.id === +currentTrack.id)[0]);
 
     React.useEffect(() => {
         setLoad(true);
-        isMounted && getOwnersByTrack(currentTrack.id).then(response => setSingers(response.data.owners));
+        if (isMounted) {
+            getOwnersByTrack(currentTrack.id).then(response => setSingers(response.data.owners));
+            setFollow(!!tracks.filter((item: any) => +item.id === +currentTrack.id)[0]);
+        }
+
         setLoad(false);
         // eslint-disable-next-line
     }, [isMounted, currentTrack, idxTrack]);
@@ -127,6 +136,23 @@ const PlayerComponent = (): JSX.Element => {
         dispatch(setCurrentTrack(nextTrack, true));
     }
 
+    const followHandler = async () => {
+        const response = await fetch(`${REACT_APP_API_URL}/audio/track/follow/${currentTrack.id}?follow=${!follow}`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${Cookies.get("token")}`
+            }
+        });
+        const data = await response.json();
+
+        if (!data.success) {
+            return setInfo({ text: data.message, type: "ERROR" });
+        }
+
+        dispatch(setFollowAudio(!follow, true, currentTrack.id));
+        setFollow(!follow);
+    }
+
     return (
         <div className={classes.player} onMouseLeave={() => setVisibleVolume(false)}>
             <audio
@@ -194,7 +220,13 @@ const PlayerComponent = (): JSX.Element => {
                         </div>
                     </div>
                     <div className={classes.actions}>
-                        <button className={classes.actionsButton} title="Добавьте текущий трек в коллекцию">
+                        <button
+                            onClick={followHandler}
+                            className={cn(classes.actionsButton, {
+                                [classes.actionsButtonLikeActive]: follow
+                            })}
+                            title="Добавьте текущий трек в коллекцию"
+                        >
                             <LikeIcon />
                         </button>
                         <button className={classes.actionsButton} title="Добавить в плейлист">

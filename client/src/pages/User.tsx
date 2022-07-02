@@ -47,6 +47,7 @@ const User = () => {
     };
 
     React.useEffect(() => {
+        if (!user.tracks) setLoad(true);
         setLoad(true);
         if (id && isMounted) setActiveUser(+user.id === +id);
         setLoad(false);
