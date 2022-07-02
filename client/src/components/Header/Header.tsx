@@ -25,16 +25,8 @@ const Header = (): JSX.Element => {
             link: "/"
         },
         {
-            name: "Подкасты и книги",
-            link: "/books"
-        },
-        {
-            name: "Детям",
-            link: "/kids"
-        },
-        {
             name: "Коллекция",
-            link: "/collection"
+            link: `/user/${info.id}/playlists`
         }
     ];
     

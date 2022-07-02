@@ -66,7 +66,7 @@ const Playlist = (): JSX.Element => {
         cover: ""
     });
     const [playShow, setPlayShow] = React.useState<boolean>(true);
-    const [follow, setFollow] = React.useState<boolean>(!!playlists.filter((item: any) => +item.id === +id));
+    const [follow, setFollow] = React.useState<boolean>(!!playlists.filter((item: any) => +item.id === +id)[0]);
 
     const isMounted = useMounted();
     const { setLoad } = React.useContext(LoaderContext);
@@ -90,13 +90,15 @@ const Playlist = (): JSX.Element => {
                 }
             });
 
-            setFollow(!!playlists.filter((item: any) => +item.id === +id));
+            setFollow(!!playlists.filter((item: any) => +item.id === +id)[0]);
             setActivePlaylist(currentPlaylist.id === +id);
             setLoad(false);
         }
 
         // eslint-disable-next-line
     }, [isMounted, currentPlaylist, id, audioPlay, currentTrack]);
+
+    console.log(follow);
 
     const playHandler = () => {
         if (!activePlaylist) {

@@ -111,11 +111,15 @@
         display: grid
         justify-content: center
         align-items: center
-        &ActionsButtonActive svg, path
-            fill: $red !important
+        &ActionsButtonActive
+            & svg, path
+                fill: $red !important
         & svg
+            fill: $grayDark
             width: 20px !important
             height: 20px !important
+            & path
+                fill: $grayDark
     &AudioList
         width: calc(100% + 17px)
         position: relative

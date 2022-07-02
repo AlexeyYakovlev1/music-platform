@@ -230,7 +230,17 @@ function audioReducer(state = initialState, action: TAction) {
                     return { ...state, follow: { ...state.follow, tracks: newFollowTracks } };
                 });
             } else {
-                // for playlist...
+                const followPlaylist = state.playlists.filter((playlist: IPlaylist) => +playlist.id === +followAction.idAudio);
+                const newFollowPlaylists = state.follow.playlists.concat(followPlaylist);
+                const idxFindPlaylist: number = state.follow.playlists.findIndex((playlist: IPlaylist) => +playlist.id === +followPlaylist[0].id);
+
+                // playlist unfollow
+                if (!followAction.payload) {
+                    state.follow.playlists.splice(idxFindPlaylist, 1);
+                    return { ...state };
+                }
+
+                return { ...state, follow: { ...state.follow, playlists: newFollowPlaylists } };
             }
 
             return { ...state };
