@@ -46,7 +46,7 @@ const User = ({ name, className, id, ...props }: IUserProps): JSX.Element => {
                         <NavLink to={`/user/${id}/tracks`}>Треки</NavLink>
                     </li>
                     <li className={classes.listItem}>
-                        <NavLink to={`/user/settings`}>Настройки</NavLink>
+                        <NavLink to={`/settings/account`}>Настройки</NavLink>
                     </li>
                     <li className={classes.listItem} onClick={logoutHandler}>Выйти</li>
                 </ul>

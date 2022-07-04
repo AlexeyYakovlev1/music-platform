@@ -79,7 +79,7 @@ const User = () => {
                                 className={classes.userHeaderInfoActionsButton}
                                 background="WHITE"
                             >
-                                <NavLink to="/user/settings">
+                                <NavLink to="/settings/account">
                                     <SettingsIcon width={20} height={20} />
                                     <span>Настройки</span>
                                 </NavLink>

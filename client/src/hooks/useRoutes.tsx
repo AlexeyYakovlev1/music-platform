@@ -6,6 +6,7 @@ import Playlist from "../pages/Playlist";
 import Owner from "src/pages/Owner";
 import Error from "src/pages/404";
 import User from "src/pages/User";
+import Settings from "src/pages/Settings";
 
 const useRoutes = (isAuth: boolean): JSX.Element => {
     return (
@@ -19,6 +20,7 @@ const useRoutes = (isAuth: boolean): JSX.Element => {
             <Route path="/playlist/:id" element={<Playlist />} />
             <Route path="/owner/:id/:type" element={<Owner />} />
             <Route path="/user/:id/:type" element={<User />} />
+            {isAuth && <Route path="/settings/:type" element={<Settings />} />}
         </Routes>
     );
 };

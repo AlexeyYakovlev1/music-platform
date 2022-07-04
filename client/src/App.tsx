@@ -2,8 +2,8 @@ import useRoutes from "./hooks/useRoutes";
 import { BrowserRouter as Router } from "react-router-dom";
 import React from "react";
 import SearchContext from "./context/search.context";
-import UserWindowContext from "./context/UserWindow.context";import { useDispatch } from "react-redux";
-import { setAllFollow, setAllPlaylists, setFollowAudio } from "./redux/actions/audio.actions";
+import UserWindowContext from "./context/UserWindow.context";import { useDispatch, useSelector } from "react-redux";
+import { setAllFollow, setAllPlaylists } from "./redux/actions/audio.actions";
 import { getPlaylists } from "./http/playlists.http";
 import LoaderContext from "./context/loader.context";
 import ModalContext from "./context/modal.context";
@@ -15,7 +15,7 @@ import { setUser } from "./redux/actions/user.actions";
 import { getFollow } from "./http/follow.http";
 
 const App = (): JSX.Element => {
-    const isAuth: boolean = false;
+    const isAuth: boolean = useSelector((state: any) => state.user.isAuth);
     const routes = useRoutes(isAuth);
 
     const [visible, setVisible] = React.useState<boolean>(false);
