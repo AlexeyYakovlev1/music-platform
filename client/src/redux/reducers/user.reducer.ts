@@ -19,7 +19,6 @@ export default function userReducer(state = initialState, action: IActionUser) {
         case SET_USER:
             if (action.logout) {
                 Cookies.remove("token");
-
                 return {
                     info: {
                         id: -1,

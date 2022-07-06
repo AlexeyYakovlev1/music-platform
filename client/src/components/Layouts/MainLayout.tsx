@@ -11,6 +11,7 @@ import LoaderContext from "src/context/loader.context";
 import Loader from "../UI/Loader/Loader";
 import Alert from "../UI/Alert/Alert";
 import AlertContext from "src/context/alert.context";
+import Cookies from "js-cookie";
 
 interface IMainLayoutProps {
     children: React.ReactNode;

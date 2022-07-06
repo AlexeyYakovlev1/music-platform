@@ -2,10 +2,8 @@ const db = require("../db");
 const bcrypt = require("bcrypt");
 const Message = require("../services/message.service");
 const { sign } = require("jsonwebtoken");
-const path = require("path");
-const fs = require("fs");
 
-const { REACT_APP_API_URL } = process.env;
+const { JWT_KEY } = process.env;
 
 class AuthController {
     async register(req, res) {
@@ -53,7 +51,7 @@ class AuthController {
             delete payload["exp"];
             delete payload["iat"];
             
-            const token = sign(user, process.env.JWT_KEY, { expiresIn: "24h" });
+            const token = sign(user, JWT_KEY, { expiresIn: "24h" });
             
             new Message(200, { success: true, token, user }).log(res, `Выполнен вход`);
         } catch(e) {
@@ -70,7 +68,7 @@ class AuthController {
             delete payload["exp"];
             delete payload["iat"];
             
-            const token = sign(payload, process.env.JWT_KEY, { expiresIn: "24h" });
+            const token = sign(payload, JWT_KEY, { expiresIn: "24h" });
             
             new Message(200, { success: true, token, user: payload }).log(res);
         } catch(e) {

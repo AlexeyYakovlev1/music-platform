@@ -12,23 +12,26 @@ import ModalContext from "src/context/modal.context";
 import Modal from "src/components/UI/Modal/Modal";
 import Tracks from "src/components/TypesPage/Tracks";
 import Playlists from "src/components/TypesPage/Playlists";
-import { ITrack } from "src/interfaces/audio.interfaces";
+import { IPlaylist, ITrack } from "src/interfaces/audio.interfaces";
 import { IUser } from "src/interfaces/user.interface";
 import { getUser } from "src/http/user.http";
+import { getFollow } from "src/http/follow.http";
 
 const User = () => {
     const { id, type } = useParams();
     const { pathname } = useLocation();
     
     const { info } = useSelector((state: any) => state.user);
-    const { tracks, playlists } = useSelector((state: any) => state.audio.follow);
+    const { follow } = useSelector((state: any) => state.audio);
 
     const { setLoad } = React.useContext(LoaderContext);
     const { setVisible } = React.useContext(ModalContext);
 
     const [activeUser, setActiveUser] = React.useState<boolean>(info.id === id);
     const [user, setUser] = React.useState<IUser>(info);
-    
+    const [tracks, setTracks] = React.useState<Array<ITrack>>(follow.tracks);
+    const [playlists, setPlaylists] = React.useState<Array<IPlaylist>>(follow.playlists);
+
     const isMounted = useMounted();
     const menu = [
         {
@@ -53,7 +56,11 @@ const User = () => {
         setLoad(true);
         if (id && isMounted) {
             getUser(+id).then((response: any) => setUser(response.data.user));
-            setActiveUser(+user.id === +id);
+            getFollow(+id).then((response: any) => {
+                setTracks(response.data.follow.tracks);
+                setPlaylists(response.data.follow.playlists);
+            });
+            setActiveUser(+info.id === +id);
         };
         setLoad(false);
 
