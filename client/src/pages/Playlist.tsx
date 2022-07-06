@@ -98,8 +98,6 @@ const Playlist = (): JSX.Element => {
         // eslint-disable-next-line
     }, [isMounted, currentPlaylist, id, audioPlay, currentTrack]);
 
-    console.log(follow);
-
     const playHandler = () => {
         if (!activePlaylist) {
             dispatch(setCurrentPlaylist(playlist));

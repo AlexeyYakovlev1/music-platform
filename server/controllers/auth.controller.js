@@ -2,6 +2,10 @@ const db = require("../db");
 const bcrypt = require("bcrypt");
 const Message = require("../services/message.service");
 const { sign } = require("jsonwebtoken");
+const path = require("path");
+const fs = require("fs");
+
+const { REACT_APP_API_URL } = process.env;
 
 class AuthController {
     async register(req, res) {
@@ -59,15 +63,16 @@ class AuthController {
 
     async check(req, res) {
         try {
-            const user = req.user;
-            const payload = user;
+            const queryForFindUser = `SELECT * FROM person WHERE id = $1`;
+            const findUser = await db.query(queryForFindUser, [req.user.id]);
+            const payload = findUser.rows[0];
 
             delete payload["exp"];
             delete payload["iat"];
             
             const token = sign(payload, process.env.JWT_KEY, { expiresIn: "24h" });
             
-            new Message(200, { success: true, token, user }).log(res);
+            new Message(200, { success: true, token, user: payload }).log(res);
         } catch(e) {
             new Message(500, { success: false }).log(res, `Ошибка сервера: ${e.message}`);
         }

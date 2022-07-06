@@ -18,8 +18,8 @@ class UserController {
             
             delete payload["exp"];
             delete payload["iat"];
-
-            return new Message(200, { success: true, user: payload }).log(res);
+            
+            return new Message(200, { success: true, user: {...payload} }).log(res);
         } catch(e) {
             return new Message();
         }

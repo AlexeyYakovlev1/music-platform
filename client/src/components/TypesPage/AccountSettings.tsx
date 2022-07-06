@@ -1,8 +1,13 @@
+import Cookies from "js-cookie";
 import React from 'react';
 import { useSelector } from "react-redux";
+import AlertContext from "src/context/alert.context";
 import classes from "../../pages/Pages.module.sass";
 import Button from "../UI/Button/Button";
 import Input from "../UI/Input/Input";
+import axios from "axios";
+
+const { REACT_APP_API_URL } = process.env;
 
 const AccountSettings = () => {
     const { info: user } = useSelector((state: any) => state.user);
@@ -12,17 +17,73 @@ const AccountSettings = () => {
         old_password: "",
         new_password: ""
     });
-    const [avatar, setAvatar] = React.useState(user.avatar);
+    const [avatar, setAvatar] = React.useState<string>(user.avatar);
+    const [avatarName, setAvatarName] = React.useState<string>("");
+    const { setInfo } = React.useContext(AlertContext);
 
     async function uploadAvatarHandler(event: any) {
-        setAvatar("new_avatar");
+        const formData = new FormData();
+        formData.append("file", event.target.files[0]);
+
+        const response: any = await axios.post(`${REACT_APP_API_URL}/upload/photo?dir=avatars`, formData, {
+            headers: {
+                "Authorization": `Bearer ${Cookies.get("token")}`
+            }
+        });
+        
+        if (!response.data.success) {
+            return setInfo({ type: "ERROR", text: response.data.message });
+        }
+
+        setAvatarName(response.data.fileName);
+        setAvatar(response.data.file);
+    }
+
+    async function submitInfoHandler(event: any) {
+        event.preventDefault();
+
+        const response = await fetch(`${REACT_APP_API_URL}/settings/user`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${Cookies.get("token")}`
+            },
+            body: JSON.stringify(change)
+        });
+        const data = await response.json();
+
+        if (!data.success) {
+            return setInfo({ text: data.message, type: "ERROR" });
+        }
+
+        setInfo({ text: data.message, type: "SUCCESS" });
+    }
+
+    async function submitAvatarHandler(event: any) {
+        event.preventDefault();
+
+        const response = await fetch(`${REACT_APP_API_URL}/settings/user/avatar`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${Cookies.get("token")}`
+            },
+            body: JSON.stringify({avatar: avatar})
+        });
+        const data = await response.json();
+
+        if (!data.success) {
+            return setInfo({ text: data.message, type: "ERROR" });
+        }
+
+        setInfo({ text: data.message, type: "SUCCESS" });
     }
 
     return (
         <div className={classes.settingsAccount}>
             <div className={classes.settingsBlock}>
                 <h2 className={classes.settingsBlockTitle}>Общая информация</h2>
-                <form className={classes.settingsBlockForm}>
+                <form className={classes.settingsBlockForm} onSubmit={submitInfoHandler}>
                     <Input
                         type="text"
                         label="Имя пользователя"
@@ -56,11 +117,12 @@ const AccountSettings = () => {
             </div>
             <div className={classes.settingsBlock}>
                 <h2 className={classes.settingsBlockTitle}>Аватар</h2>
-                <form className={classes.settingsBlockForm}>
+                <form className={classes.settingsBlockForm} onSubmit={submitAvatarHandler}>
                     <Input
                         type="file"
                         label="Фотография пользователя"
                         name="avatar"
+                        accept="image/*"
                         onChange={uploadAvatarHandler}
                     />
                     <img className={classes.settingsBlockAvatar} src={avatar} alt={user.name} />

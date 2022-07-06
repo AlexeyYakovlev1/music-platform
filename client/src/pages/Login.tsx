@@ -43,8 +43,8 @@ const Login = (): JSX.Element => {
         dispatch(setReduxUser(data.user, false));
         Cookies.set("token", data.token);
 
-        navigate("/");
         document.title = "Платформа Музыка - собираем музыку и подкасты для вас";
+        navigate("/");
     }
 
     return (

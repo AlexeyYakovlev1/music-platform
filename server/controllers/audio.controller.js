@@ -357,7 +357,7 @@ class AudioController {
 		try {
             const { id } = req.params;
 			const queryForFind = `SELECT * FROM playlist WHERE id = $1`;
-			const findTracks = await db.query(queryForFind, [id]);
+            const findTracks = await db.query(queryForFind, [id]);
             const playlist = findTracks.rows[0];
             const audios = [];
             const owners = [];
@@ -402,9 +402,7 @@ class AudioController {
         } catch(e) {
             return new Message(500, { success: false }).log(res, `Ошибка сервера: ${e.message}`);
         }
-    }
-
-    // 
+    };
 }
 
 module.exports = new AudioController();

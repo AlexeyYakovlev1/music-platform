@@ -9,7 +9,7 @@ const port = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(fileUpload());
-app.use(express.json({ extended: true }));
+app.use(express.json({ extended: true, limit: "50mb" }));
 
 app.use("/auth", require("./routes/auth.routes"));
 app.use("/audio", require("./routes/audio.routes"));
@@ -17,6 +17,8 @@ app.use("/filts", require("./routes/filts.routes"));
 app.use("/owner", require("./routes/owner.routes"));
 app.use("/user", require("./routes/user.routes"));
 app.use("/follow", require("./routes/follow.routes"));
+app.use("/settings", require("./routes/settings.routes"));
+app.use("/upload", require("./routes/upload.routes"));
 
 const run = () => {
     app.listen(port, () => {
