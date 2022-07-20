@@ -2,7 +2,7 @@ import useRoutes from "./hooks/useRoutes";
 import { BrowserRouter as Router } from "react-router-dom";
 import React from "react";
 import SearchContext from "./context/search.context";
-import UserWindowContext from "./context/UserWindow.context";import { useDispatch, useSelector } from "react-redux";
+import UserWindowContext from "./context/UserWindow.context"; import { useDispatch, useSelector } from "react-redux";
 import { setAllFollow, setAllPlaylists } from "./redux/actions/audio.actions";
 import { getPlaylists } from "./http/playlists.http";
 import LoaderContext from "./context/loader.context";
@@ -30,10 +30,8 @@ const App = (): JSX.Element => {
         setLoad(true);
         getPlaylists().then((response: any) => dispatch(setAllPlaylists(response.data.playlists)));
         checkAuth().then((response: any) => {
-            if (!response.data.success) {
-                return dispatch(setUser(response.data.user, true));
-            }
-            
+            if (!response.data.success) dispatch(setUser(response.data.user, true));
+
             Cookies.set("token", response.data.token);
             dispatch(setUser(response.data.user, false));
             getFollow(response.data.user.id).then((obj: any) => {

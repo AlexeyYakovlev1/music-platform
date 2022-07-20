@@ -28,90 +28,59 @@ class OwnerController {
         }
     };
 
-    getOne(req, res) {
-        const { id } = req.params;
-        const queryForFind = `SELECT * FROM owner WHERE id = $1`;
+    async getOne(req, res) {
+        try {
+            const { id } = req.params;
+            const queryForFind = `SELECT * FROM owner WHERE id = $1`;
+            const findOwner = await db.query(queryForFind, [id]);
+            const owner = findOwner.rows[0];
+            const audios = [];
+            const oldPlaylists = [];
+            const newPlaylists = [];
 
-        db.query(queryForFind, [id])
-            .then(findOwner => {
-                const currentFindOwner = findOwner.rows;
+            let count = 0;
 
-                if (!currentFindOwner) new Message(400, { success: false })
-                    .log(res, `Поля rows в findOwner не существует`);
+            // audios
+            for (let i = 0; i < owner.audios.length; i++) {
+                const audioId = owner.audios[i];
+                const queryForFindTrack = `SELECT * FROM track WHERE id = $1`;
+                const findTrack = await db.query(queryForFindTrack, [audioId]);
 
-                const owner = currentFindOwner[0];
-                const audios = [];
-                const oldPlaylists = [];
-                const newPlaylists = [];
+                audios.push(findTrack.rows[0]);
+            }
 
-                let count = 0;
+            // oldPlaylists
+            for (let s = 0; s < owner.audios.length; s++) {
+                const audioId = owner.audios[s];
+                const queryForFindPlaylist = `SELECT * FROM playlist WHERE $1 = ANY (audios)`;
+                const findPlaylist = await db.query(queryForFindPlaylist, [audioId]);
 
-                // audios
-                for (let i = 0; i < owner.audios.length; i++) {
-                    const audioId = owner.audios[i];
+                if (count > newPlaylists.length) break;
+
+                count++;
+
+                oldPlaylists.push(findPlaylist.rows[0]);
+            }
+
+            // new playlists
+            for (let c = 0; c < oldPlaylists.length; c++) {
+                const playlist = oldPlaylists[c];
+                const audiosForCurrentPlaylist = [];
+
+                for (let j = 0; j < playlist.audios.length; j++) {
+                    const audioId = playlist.audios[j];
                     const queryForFindTrack = `SELECT * FROM track WHERE id = $1`;
-
-                    db.query(queryForFindTrack, [audioId])
-                        .then(findTrack => {
-                            const currentFindTrack = findTrack.rows;
-
-                            if (currentFindTrack) audios.push(currentFindTrack[0]);
-                            else new Message(400, { success: false })
-                                .log(res, `Поля rows в findTrack не существует`);
-                        })
-                        .catch(err => new Message(400, { success: false })
-                            .log(res, `Ошибка при поиске трека: ${err.message}`));
+                    const findTrack = await db.query(queryForFindTrack, [audioId]);
+                    audiosForCurrentPlaylist.push(findTrack.rows[0]);
                 }
 
-                // old playlists
-                for (let s = 0; s < owner.audios.length; s++) {
-                    const audioId = owner.audios[s];
-                    const queryForFindPlaylist = `SELECT * FROM playlist WHERE $1 = ANY (audios)`;
+                newPlaylists.push({ ...playlist, audios: audiosForCurrentPlaylist });
+            }
 
-                    db.query(queryForFindPlaylist, [audioId])
-                        .then(findPlaylist => {
-                            const currentFindPlaylist = findPlaylist.rows;
-
-                            if (currentFindPlaylist) {
-                                if (count > newPlaylists.length) return;
-                                count++;
-                                oldPlaylists.push(currentFindPlaylist[0]);
-                            } else new Message(400, { success: false })
-                                .log(res, `Поля rows в findPlaylist не существует`);
-                        })
-                        .catch(err => new Message(400, { success: false })
-                            .log(res, `Ошибка при поиске плейлиста: ${err.message}`));
-                }
-
-                // new playlists
-                for (let c = 0; c < oldPlaylists.length; c++) {
-                    const playlist = oldPlaylists[c];
-                    const audiosForCurrentPlaylist = [];
-
-                    for (let j = 0; j < playlist.audios.length; j++) {
-                        const audioId = playlist.audios[j];
-                        const queryForFindTrack = `SELECT * FROM track WHERE id = $1`;
-
-                        db.query(queryForFindTrack, [audioId])
-                            .then(findTrack => {
-                                const currentFindTrack = findTrack.rows;
-
-                                if (currentFindTrack) audiosForCurrentPlaylist.push(currentFindTrack[0]);
-                                else new Message(400, { success: false })
-                                    .log(res, `Поля rows в findTrack не существует`);
-                            })
-                            .catch(err => new Message(400, { success: false })
-                                .log(res, `Ошибка при поиске трека: ${err.message}`));
-                    }
-
-                    newPlaylists.push({ ...playlist, audios: audiosForCurrentPlaylist });
-                }
-
-                return new Message(200, { success: true, audios, playlists: newPlaylists, owner: owner }).log(res);
-            })
-            .catch(err => {
-                return new Message(400, { success: false }).log(res, `Ошибка при поиске пользователя: ${err.message}`);
-            });
+            return new Message(200, { success: true, audios, playlists: newPlaylists, owner: owner }).log(res);
+        } catch (e) {
+            return new Message(500, { success: false }).log(res, `Ошибка сервера: ${e.message}`);
+        }
     };
 
     async getTracksByTrack(req, res) {
