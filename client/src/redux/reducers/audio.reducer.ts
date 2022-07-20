@@ -14,6 +14,7 @@ interface IInitialState {
     playlists: IPlaylist[];
     audioPlay: boolean;
     follow: IFollow;
+    searchText: string;
 }
 
 const initialState: IInitialState = {
@@ -172,7 +173,8 @@ const initialState: IInitialState = {
         ],
         cover: ""
     }],
-    audioPlay: false
+    audioPlay: false,
+    searchText: ""
 };
 
 type TAction = IActionAudio | IActionPlaylist | IActionAllPlaylists | IActionIdx;

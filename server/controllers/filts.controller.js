@@ -1,5 +1,5 @@
 const db = require("../db");
-const Message = require("../services/message.service");
+const Message = require("../utils/message.util");
 
 class FiltsController {
     async add(req, res) {
@@ -16,7 +16,7 @@ class FiltsController {
             const newFilt = await db.query(queryForInsert, [name]);
 
             return new Message(200, { success: true, filt: newFilt.rows[0] }).log(res, `Ключевое слово добавлено`);
-        } catch(e) {
+        } catch (e) {
             return new Message(500, { success: false }).log(res, `Ошибка сервера: ${e.message}`);
         }
     };
@@ -27,7 +27,7 @@ class FiltsController {
             const filts = await db.query(queryForFind);
 
             return new Message(200, { success: true, filts: filts.rows }).log(res);
-        } catch(e) {
+        } catch (e) {
             return new Message(500, { success: false }).log(res, `Ошибка сервера: ${e.message}`);
         }
     };

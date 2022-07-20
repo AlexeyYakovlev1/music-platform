@@ -1,4 +1,4 @@
-const Message = require("../services/message.service");
+const Message = require("../utils/message.util");
 const db = require("../db");
 
 class FollowController {
@@ -30,16 +30,16 @@ class FollowController {
                     }
 
                     to.push({ ...find.rows[0], follow: true });
-                }    
+                }
             }
 
             await pushData(follow.tracks || [], "track", tracks);
             await pushData(follow.playlists || [], "playlist", playlists);
 
-            const payload = {...follow, tracks, playlists};
+            const payload = { ...follow, tracks, playlists };
 
             return new Message(200, { success: true, follow: payload }).log(res);
-        } catch(e) {
+        } catch (e) {
             return new Message(500, { success: false }).log(res, `Ошибка сервера: ${e.message}`);
         }
     }

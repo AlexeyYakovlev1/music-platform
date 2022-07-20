@@ -1,5 +1,5 @@
 import { IPlaylist, ITrack } from "../../interfaces/audio.interfaces";
-import { IActionAudio, IActionPlaylist, IActionAllPlaylists, IActionIdx, IActionPlay, IActionFollowAudio, IActionAllFollow } from "../../interfaces/redux.interfaces";
+import { IActionAudio, IActionPlaylist, IActionAllPlaylists, IActionIdx, IActionPlay, IActionFollowAudio, IActionAllFollow, IActionSearch } from "../../interfaces/redux.interfaces";
 
 export const setAllPlaylists = (playlists: IPlaylist[]): IActionAllPlaylists => {
     return {
@@ -51,5 +51,12 @@ export const setFollowAudio = (follow: boolean, track: boolean, idAudio: number)
         payload: follow,
         track,
         idAudio
+    }
+}
+
+export const setTextSearch = (value: string): IActionSearch => {
+    return {
+        type: "SET_TEXT_SEARCH",
+        payload: value
     }
 }
