@@ -21,21 +21,18 @@ class AudioController {
             const allowedTypes = [".mp3", ".wav", ".ogg"];
 
             // check extension
-            if (!allowedTypes.includes(musicExtname)) {
-                return new Message(400, { success: false }).log(res, `Поддерживаемые расширения для файлов: { ${allowedTypes.join(", ")} }`);
-            };
+            if (!allowedTypes.includes(musicExtname))
+                return new Message(400, { success: false })
+                    .log(res, `Поддерживаемые расширения для файлов: { ${allowedTypes.join(", ")} }`);
 
             // check dir for music
-            if (!fs.existsSync(musicDir)) {
-                fs.mkdirSync(musicDir, { recursive: true });
-            };
+            if (!fs.existsSync(musicDir)) fs.mkdirSync(musicDir, { recursive: true });
 
             const queryForFind = `SELECT title FROM track WHERE title = $1`;
             const findTrack = await db.query(queryForFind, [title]);
 
-            if (findTrack.rows[0]) {
-                return new Message(400, { success: false }).log(res, `Трек по заголовку ${title} уже существует`);
-            }
+            if (findTrack.rows[0]) new Message(400, { success: false })
+                .log(res, `Трек по заголовку ${title} уже существует`);
 
             const fileName = `${musicName.replace(musicExtname, "")}_${uuid.v4()}${musicExtname}`;
             const queryForAdd = `INSERT INTO track(duration,filt,owners,cover,title,audio) VALUES($1,$2,$3,$4,$5,$6) RETURNING *`;
@@ -43,15 +40,12 @@ class AudioController {
             let ows = owners;
 
             // for form-data in postman
-            if (typeof owners === "string") {
-                ows = JSON.parse(owners);
-            }
+            if (typeof owners === "string") ows = JSON.parse(owners);
 
             // insert file in folder
             fs.appendFile(path.join(musicDir, fileName), file.data, (err) => {
-                if (err) {
-                    return new Message(400, { success: false }).log(res, `Ошибка при добавлении файла в папку: ${err.message}`);
-                }
+                if (err) new Message(400, { success: false })
+                    .log(res, `Ошибка при добавлении файла в папку: ${err.message}`);
             });
 
             const duration = await getAudioDurationInSeconds(path.join(musicDir, fileName)).then(data => getTime(data));
@@ -78,7 +72,6 @@ class AudioController {
                 if (owner.audios) audios = audios.concat(owner.audios);
 
                 const queryForUpdateOwner = `UPDATE owner SET audios = $1 WHERE id = $2`;
-
                 await db.query(queryForUpdateOwner, [audios, ows[i]]);
             }
 
@@ -98,19 +91,15 @@ class AudioController {
             const findTrack = await db.query(queryForFind, [id]);
             const track = findTrack.rows[0];
 
-            if (!track) {
-                return new Message(400, { success: false }).log(res, "Трека по такому идентификатору не существует");
-            };
+            if (!track) new Message(400, { success: false })
+                .log(res, "Трека по такому идентификатору не существует");
 
             // update owner
             const queryForFindOwner = `SELECT * FROM owner WHERE $1 = ANY (filts)`;
             const findOwner = await db.query(queryForFindOwner, [track.filt]);
             const owner = findOwner.rows[0];
 
-            const newAudiosForOwner = owner.audios.filter(audioId => {
-                return audioId !== track.id;
-            });
-
+            const newAudiosForOwner = owner.audios.filter(audioId => audioId !== track.id);
             const queryForUpdateOwner = `UPDATE owner SET audios = $1 WHERE id = $2`;
             await db.query(queryForUpdateOwner, [newAudiosForOwner, owner.id]);
 
@@ -124,9 +113,8 @@ class AudioController {
             // check exists for audio dir
             if (fs.existsSync(audioDir)) {
                 fs.unlink(audioDir, (err) => {
-                    if (err) {
-                        return new Message(400, { success: false }).log(res, `Ошибка при удалении файла: ${err.message}`);
-                    }
+                    if (err) new Message(400, { success: false })
+                        .log(res, `Ошибка при удалении файла: ${err.message}`);
                 });
             };
 
@@ -144,17 +132,15 @@ class AudioController {
             const queryForFindPerson = `SELECT * FROM person WHERE id = $1`;
             const findPerson = await db.query(queryForFindPerson, [user.id]);
 
-            if (!findPerson.rows[0]) {
-                return new Message(400, { success: false }).log(res, `Пользователя по идентификатору ${user.id} не существует`);
-            }
+            if (!findPerson.rows[0]) new Message(400, { success: false })
+                .log(res, `Пользователя по идентификатору ${user.id} не существует`);
 
             const queryForFindTrack = `SELECT * FROM track WHERE id = $1`;
             const findTrack = await db.query(queryForFindTrack, [id]);
             const track = findTrack.rows[0];
 
-            if (!track) {
-                return new Message(400, { success: false }).log(res, `Трека по идентификатору ${id} не существует`);
-            }
+            if (!track) new Message(400, { success: false })
+                .log(res, `Трека по идентификатору ${id} не существует`);
 
             if (query.follow === "true") {
                 const queryForUpdateAppFollow = `UPDATE follow SET tracks = array_append(tracks, $1) WHERE person_id = $2`;
@@ -171,28 +157,35 @@ class AudioController {
     };
 
     // get all tracks
-    async trackGetAll(req, res) {
-        try {
-            const queryForFind = `SELECT * FROM track`;
-            const findTracks = await db.query(queryForFind);
+    trackGetAll(req, res) {
+        const queryForFind = `SELECT * FROM track`;
 
-            return new Message(200, { success: true, tracks: findTracks.rows }).log(res);
-        } catch (e) {
-            return new Message(500, { success: false }).log(res, `Ошибка сервера: ${e.message}`);
-        }
+        db.query(queryForFind)
+            .then(findTracks => {
+                if (!findTracks.rows)
+                    return new Message(400, { success: false }).log(res, `Поля rows в findTracks не существует`);
+
+                return new Message(200, { success: true, tracks: findTracks.rows }).log(res);
+            })
+            .catch(err => {
+                return new Message(400, { success: false }).log(res, `Ошибка при поиске track: ${err.message}`);
+            });
     };
 
     // get track by id
-    async trackGetOne(req, res) {
-        try {
-            const { id } = req.params;
-            const queryForFind = `SELECT * FROM track WHERE id = $1`;
-            const findTrack = await db.query(queryForFind, [id]);
+    trackGetOne(req, res) {
+        const { id } = req.params;
+        const queryForFind = `SELECT * FROM track WHERE id = $1`;
+        db.query(queryForFind, [id])
+            .then(findTrack => {
+                if (!findTrack.rows)
+                    return new Message(400, { success: false }).log(res, `Поля rows в findTrack не существует`);
 
-            return new Message(200, { success: true, track: findTrack.rows[0] }).log(res);
-        } catch (e) {
-            return new Message(500, { success: false }).log(res, `Ошибка сервера: ${e.message}`);
-        }
+                return new Message(200, { success: true, track: findTrack.rows[0] }).log(res);
+            })
+            .catch(err => {
+                return new Message(400, { success: false }).log(res, `Ошибка при поиске track: ${err.message}`);
+            });
     };
 
     // add playlist
@@ -203,26 +196,24 @@ class AudioController {
             const findPlaylist = await db.query(queryForFind, [title]);
             const playlist = findPlaylist.rows[0];
 
-            if (playlist) {
-                return new Message(400, { success: false }).log(res, `Плейлист по такому названию уже существует`);
-            }
+            if (playlist) new Message(400, { success: false })
+                .log(res, `Плейлист по такому названию уже существует`);
 
             // check owners
             owners.forEach(async (owner) => {
                 const queryForFindOwner = `SELECT * FROM owner WHERE id = $1`;
                 const findOwner = await db.query(queryForFindOwner, [owner]);
-                if (!findOwner.rows[0]) {
-                    return new Message(400, { success: false }).log(res, `Исполнитель по идентификатору ${owner} не найден`);
-                }
+
+                if (!findOwner.rows[0]) new Message(400, { success: false })
+                    .log(res, `Исполнитель по идентификатору ${owner} не найден`);
             });
 
             // search audio by property filt
             const queryForFindTracks = `SELECT id FROM track WHERE filt = $1`;
             const findTracksByFilt = await db.query(queryForFindTracks, [name]);
 
-            if (!findTracksByFilt.rows.length) {
-                return new Message(400, { success: false }).log(res, `Песен по фильтру ${name} не найдено`);
-            }
+            if (!findTracksByFilt.rows.length) new Message(400, { success: false })
+                .log(res, `Песен по фильтру ${name} не найдено`);
 
             // create playlist
             const audioIds = findTracksByFilt.rows.map(track => track.id);
@@ -238,9 +229,8 @@ class AudioController {
                 if (owner.filts.some(item => item === name)) {
                     const queryForUpdate = `UPDATE owner SET audios = $1, playlists = array_prepend($2, playlists) WHERE filts = $3`;
                     await db.query(queryForUpdate, [audioIds, newPlaylist.rows[0].id, owner.filts]);
-                } else {
-                    return new Message(400, { success: false }).log(res, `У исполнителя '${owner.name}' фильтра под имя плейлиста '${name}'`);
-                };
+                } else new Message(400, { success: false })
+                    .log(res, `У исполнителя '${owner.name}' фильтра под имя плейлиста '${name}'`);
             };
 
             return new Message(200, { success: true, newPlaylist: newPlaylist.rows[0] }).log(res);
@@ -257,17 +247,15 @@ class AudioController {
             const queryForFindPerson = `SELECT * FROM person WHERE id = $1`;
             const findPerson = await db.query(queryForFindPerson, [user.id]);
 
-            if (!findPerson.rows[0]) {
-                return new Message(400, { success: false }).log(res, `Пользователя по идентификатору ${user.id} не существует`);
-            }
+            if (!findPerson.rows[0]) new Message(400, { success: false })
+                .log(res, `Пользователя по идентификатору ${user.id} не существует`);
 
             const queryForFindPlaylist = `SELECT * FROM playlist WHERE id = $1`;
             const findPlaylist = await db.query(queryForFindPlaylist, [id]);
             const playlist = findPlaylist.rows[0];
 
-            if (!playlist) {
-                return new Message(400, { success: false }).log(res, `Плейлиста по идентификатору ${id} не существует`);
-            }
+            if (!playlist) new Message(400, { success: false })
+                .log(res, `Плейлиста по идентификатору ${id} не существует`);
 
             if (query.follow === "true") {
                 const queryForUpdateFollow = `UPDATE follow SET playlists = array_append(playlists, $1) WHERE person_id = $2`;
@@ -297,9 +285,8 @@ class AudioController {
             const playlist = findPlaylist.rows[0];
             const owners = findOwners.rows[0];
 
-            if (!playlist) {
-                return new Message(400, { success: false }).log(res, `Плейлист по идентификатору ${id} не существует`);
-            }
+            if (!playlist) new Message(400, { success: false })
+                .log(res, `Плейлист по идентификатору ${id} не существует`);
 
             for (let i = 0; i < owners.length; i++) {
                 const queryForUpdateOwner = `UPDATE owner SET playlists = array_remove(playlists, $1) WHERE id = $2`;
@@ -317,28 +304,35 @@ class AudioController {
     };
 
     // get all playlists
-    async playlistGetAll(req, res) {
-        try {
-            const queryForFind = `SELECT * FROM playlist`;
-            const findPlaylists = await db.query(queryForFind);
+    playlistGetAll(req, res) {
+        const queryForFind = `SELECT * FROM playlist`;
 
-            return new Message(200, { success: true, playlists: findPlaylists.rows }).log(res);
-        } catch (e) {
-            return new Message(500, { success: false }).log(res, `Ошибка сервера: ${e.message}`);
-        }
+        db.query(queryForFind)
+            .then(findPlaylists => {
+                if (!findPlaylists.rows)
+                    return new Message(400, { success: false }).log(res, `Поля rows в findPlaylists не существует`);
+
+                return new Message(200, { success: true, playlists: findPlaylists.rows }).log(res);
+            })
+            .catch(err => {
+                return new Message(400, { success: false }).log(res, `Ошибка при поиске playlist: ${err.message}`);
+            });
     };
 
     // get playlist by id
-    async playlistGetOne(req, res) {
-        try {
-            const { id } = req.params;
-            const queryForFind = `SELECT * FROM playlist WHERE id = $1`;
-            const findPlaylist = await db.query(queryForFind, [id]);
+    playlistGetOne(req, res) {
+        const { id } = req.params;
+        const queryForFind = `SELECT * FROM playlist WHERE id = $1`;
+        db.query(queryForFind, [id])
+            .then(findPlaylist => {
+                if (!findPlaylist.rows)
+                    return new Message(400, { success: false }).log(res, `Поля rows в findPlaylist не существует`);
 
-            return new Message(200, { success: true, playlist: findPlaylist.rows[0] }).log(res);
-        } catch (e) {
-            return new Message(500, { success: false }).log(res, `Ошибка сервера: ${e.message}`);
-        }
+                return new Message(200, { success: true, playlist: findPlaylist.rows[0] }).log(res);
+            })
+            .catch(err => {
+                return new Message(400, { success: false }).log(res, `Ошибка при поиске playlist: ${err.message}`);
+            });
     };
 
     // get all by id playlist
@@ -378,10 +372,9 @@ class AudioController {
             const musicDir = path.relative(PROJECT_ROOT, "./templates/music");
             const filePath = path.join(musicDir, name);
 
-            if (!fs.existsSync(filePath)) {
+            if (!fs.existsSync(filePath))
                 return new Message(400, { success: false })
                     .log(res, `Директории "./templates/music" для музыки не существует`);
-            }
 
             const musicExtname = path.extname(name);
             const file = fs.readFileSync(filePath).toString("base64");

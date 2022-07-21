@@ -30,7 +30,8 @@ const App = (): JSX.Element => {
         setLoad(true);
         getPlaylists().then((response: any) => dispatch(setAllPlaylists(response.data.playlists)));
         checkAuth().then((response: any) => {
-            if (!response.data.success) dispatch(setUser(response.data.user, true));
+            if (!response.data.success)
+                return dispatch(setUser(response.data.user, true));
 
             Cookies.set("token", response.data.token);
             dispatch(setUser(response.data.user, false));
